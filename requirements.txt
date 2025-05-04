@@ -1,0 +1,9 @@
+django >4.2,<4.3
+psycopg[binary]
+python-decouple
+faker==26.0.0
+pillow
+django-debug-toolbar==4.4.6
+django-iranian-cities
+gunicorn
+mysqlclient
