@@ -1,0 +1,256 @@
+{% load static %}
+{% load number_filters %}
+<!-- JS Implementing Plugins -->
+<script src="{% static 'js/vendor.min.js' %}"></script>
+
+<!-- JS Front -->
+<script src="{% static 'js/theme.min.js' %}"></script>
+
+<!-- JS Plugins Init. -->
+<script>
+  (function () {
+    // INITIALIZATION OF MEGA MENU
+    // =======================================================
+    new HSMegaMenu('.js-mega-menu', {
+      desktop: {
+        position: 'left'
+      }
+    })
+
+
+    // INITIALIZATION OF SHOW ANIMATIONS
+    // =======================================================
+    new HSShowAnimation('.js-animation-link')
+
+
+    // INITIALIZATION OF BOOTSTRAP VALIDATION
+    // =======================================================
+
+
+
+    // INITIALIZATION OF BOOTSTRAP DROPDOWN
+    // =======================================================
+    HSBsDropdown.init()
+
+
+    // INITIALIZATION OF GO TO
+    // =======================================================
+    new HSGoTo('.js-go-to')
+
+
+    // INITIALIZATION OF SWIPER
+    // =======================================================
+    var sliderThumbs = new Swiper('.js-swiper-shop-hero-thumbs', {
+      watchSlidesVisibility: true,
+      watchSlidesProgress: true,
+      history: false,
+      slidesPerView: 3,
+      spaceBetween: 15,
+      on: {
+        beforeInit: (swiper) => {
+          const css = `.swiper-slide-thumb-active .swiper-thumb-progress .swiper-thumb-progress-path {
+                opacity: 1;
+                -webkit-animation: ${swiper.originalParams.autoplay.delay}ms linear 0ms forwards swiperThumbProgressDash;
+                animation: ${swiper.originalParams.autoplay.delay}ms linear 0ms forwards swiperThumbProgressDash;
+            }`
+          style = document.createElement('style')
+          document.head.appendChild(style)
+          style.type = 'text/css'
+          style.appendChild(document.createTextNode(css));
+
+          swiper.el.querySelectorAll('.js-swiper-thumb-progress')
+            .forEach(slide => {
+              slide.insertAdjacentHTML('beforeend', '<span class="swiper-thumb-progress"><svg version="1.1" viewBox="0 0 160 160"><path class="swiper-thumb-progress-path" d="M 79.98452083651917 4.000001576345426 A 76 76 0 1 1 79.89443752470656 4.0000733121155605 Z"></path></svg></span>')
+            })
+        },
+      },
+    });
+
+    var swiper = new Swiper('.js-swiper-shop-classic-hero', {
+      autoplay: true,
+      loop: true,
+      navigation: {
+        nextEl: '.js-swiper-shop-classic-hero-button-next',
+        prevEl: '.js-swiper-shop-classic-hero-button-prev',
+      },
+      thumbs: {
+        swiper: sliderThumbs
+      }
+    });
+
+
+    // INITIALIZATION OF COUNTDOWN
+    // =======================================================
+    const oneYearFromNow = new Date()
+
+    document.querySelectorAll('.js-countdown').forEach(item => {
+      const days = item.querySelector('.js-cd-days'),
+        hours = item.querySelector('.js-cd-hours'),
+        minutes = item.querySelector('.js-cd-minutes'),
+        seconds = item.querySelector('.js-cd-seconds')
+
+      countdown(oneYearFromNow.setFullYear(
+        oneYearFromNow.getFullYear() + 1),
+        ts => {
+          days.innerHTML = ts.days
+          hours.innerHTML = ts.hours
+          minutes.innerHTML = ts.minutes
+          seconds.innerHTML = ts.seconds
+        },
+        countdown.DAYS | countdown.HOURS | countdown.MINUTES | countdown.SECONDS
+      )
+    })
+  })()
+</script>
+
+<!-- massage listerror func -->
+<script>
+  // Function to hide the error message after 3 seconds
+  function hideErrorMessage() {
+    var errorMessage = document.getElementById('massages_list');
+    if (errorMessage) {
+      errorMessage.style.display = 'none';
+    }
+  }
+
+  // Set a timeout to hide the error message after 3 seconds
+  setTimeout(hideErrorMessage, 3000);
+</script>
+
+<!-- cart functions-->
+<script>
+  function addToCart(product_id){
+    $.ajax({
+      type: "POST",
+      url: "{% url 'cart:add_to_cart' %}",
+      data: {
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        product_id: product_id,
+      },
+      success: function(resultData){
+          $('#cart-item-count').html(resultData.cart_obj.length);
+      }
+    });
+  }
+
+  function clearCart(){
+    $.ajax({
+      type: "POST",
+      url: "{% url 'cart:clear_cart' %}",
+      data: {
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+      },
+      success: function(resultData){
+        updateCartItems()
+        alert('سبد خرید با موفقیت خالی شد')
+        $('#cart-item-count').html(resultData.cart_obj.length);
+      }
+    });
+  }
+
+  function changeProductQuantity(product_id,quantity){
+    $.ajax({
+      type: "POST",
+      url: "{% url 'cart:update_cart_quantity' %}",
+      data: {
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        product_id: product_id,
+        quantity: quantity,
+      },
+      success: function(resultData){
+          window.location.reload()
+          
+      }
+    });
+  };
+
+  function deleteCartProduct(product_id){
+
+    $.ajax({
+      type: "POST",
+      url: "{% url 'cart:delete_cart_item' %}",
+      data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          product_id: product_id,
+      },
+      success: function(resultData) {
+        window.location.reload();
+        
+        
+      },
+      error: function() {
+          // Handle any AJAX error
+          alert('Failed to delete item.');
+      }
+  });
+  };
+
+</script>
+
+<!-- cart offcanvas-->
+<script>
+  function updateCartItems() {
+      $.ajax({
+          url: '{% url "cart:get_cart_items" %}',
+          method: 'GET',
+          dataType: 'json',
+          success: function(response) {
+              console.log(response)
+              var container = $('#cart-items-container');
+              var items = response.items;
+              var totalPrice = response.total_price;
+              
+              container.empty();  // Clear the current items
+              
+              items.forEach(function(item) {
+                  container.append(`
+                      <div class="border-bottom mb-4">
+                          <div class="d-flex">
+                              <div class="flex-shrink-0">
+                                  <div class="avatar avatar-lg ms-3">
+                                      <img class="avatar-img" src="${item.image}" alt="${item.title}">
+                                  </div>
+                              </div>
+                              <div class="flex-grow-1">
+                                  <a class="h5" href="./product-overview.html">${item.title}</a>
+                                  <div class="d-grid py-3">
+                                      <div class="text-body py-1">
+                                          <div class="d-flex justify-content-start align-items-center">
+                                              <span class="h6">تعداد:</span>
+                                              
+                                                      <span class="px-5">
+                                                      ${item.quantity}
+                                                      </span>
+                                              
+                                          </div>
+                                      </div>
+                                      <div class="text-body py-1">
+                                          <div class="d-flex justify-content-start align-items-center">
+                                              <span class="h6">قیمت:</span>
+                                              <span class="px-5">${item.price} تومان</span>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  `);
+              });
+              
+              $('#total-price').text(`قیمت نهایی: ${response.cart_total_price} تومان`);
+              $('#offcanvasProductCount').text(`کالا: ${response.items_count} عدد`);
+          },
+          error: function(xhr, status, error) {
+              console.error('Failed to update cart items:', error);
+          }
+      });
+  }
+
+  // Example: Update the cart items when the off-canvas is shown
+  $('#offcanvasNavbarShoppingCart').on('show.bs.offcanvas', function () {
+      updateCartItems();
+  });
+
+  // Optionally, update the cart periodically or in response to certain actions
+  {% comment %} setInterval(updateCartItems, 60000);  // Update every 60 seconds (adjust as needed) {% endcomment %}
+</script>

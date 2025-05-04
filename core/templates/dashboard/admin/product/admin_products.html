@@ -1,0 +1,240 @@
+{% extends "dashboard/admin/base.html" %}
+{% load static %}
+{% load number_filters %}
+
+{% block extra_css %}
+<style>
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .table th, .table td {
+    text-align: center;
+  }
+  .table .btn {
+    margin: 0 2px;
+  }
+</style>
+
+{% endblock extra_css %}
+
+{% block admin_dashboard_body %}
+<div class="col-lg-9">
+    <!-- Card -->
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="">لیست محصولات</h5>
+          <a class="btn btn-primary" href="{% url "dashboard:admin:add_product" %}">اضافه کردن</a>
+        </div>
+      </div>
+      <!-- End Header -->
+
+      <!-- Body -->
+      <div class="card-body">
+        <div class="container pb-5">
+          <form class="row" action='.'>
+            
+
+            <!-- Input Card -->
+            <div class="col-md-6 py-1">
+              <input type="text" class="form-control" placeholder="جستجوی" aria-label="جستجوی ایمیل" id="productname" name="product-name">
+
+            </div>
+            <!-- End Input Card -->
+            <div class="col-md-6 py-1">
+              <select class="form-select" id='select-order-by' name='order-by'>
+                <option value="" selected>مرتب سازی بر اساس </option>
+                <option value="-created_date">جدیدترین</option>
+                <option value="created_date">قدیمی ترین</option>
+                <option value="price">کمترین قیمت</option>
+                <option value="-price">بیشترین قیمت</option>
+              </select>
+            </div>
+            <div class="col-md-6 py-1">
+              <select class="form-select" name="category" id="categorySelect">
+                <option value="" selected>دسته بندی ها</option>
+                {% for category in categories %}
+                
+                <option value="{{category.id}}">{{category.title}}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- New Filter for Published Status -->
+            <div class="col-md-6 py-1">
+              <select class="form-select" name="ispublished" id="ispublishedSelect">
+                <option value="" selected>وضعیت انتشار</option>
+                <option value="1">منتشر شده</option>
+                <option value="0">منتشر نشده</option>
+              </select>
+            </div>
+            <!-- End New Filter -->
+            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center p-3 mx-auto">
+              <button type="submit" class="btn btn-primary mx-2">
+                <i class="bi bi-search"></i>
+              </button>
+              <a class="btn btn-secondary" href="{% url 'dashboard:admin:products' %}">
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="row">
+          <!-- Table -->
+          <div class="container-fluid">
+            <!-- Wrap the table with table-responsive -->
+            <span>
+              تعداد محصولات:  {{product_count}}
+            </span>
+            <form method="post">
+              {% csrf_token %}
+              {% comment %} products {% endcomment %}
+              <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                      <thead class="thead-light">
+                          <tr>
+                            
+                              <th scope="col"><input type="checkbox" id="select-all"></th> <!-- Select all checkbox -->
+                              <th scope="col">ID</th>
+                              <th scope="col">نام محصول</th>
+                              <th scope="col">دسته بندی</th>
+                              <th scope="col">قیمت با تخفیف</th>
+                              <th scope="col">تعداد</th>
+                              <th scope="col">وضعیت</th>
+                              <th scope="col">تخفیف</th>
+                              <th scope="col">عملیات</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for product in products %}
+                          <tr class="text-center">
+                              <td><input type="checkbox" name="selected_products" value="{{ product.id }}"></td>
+                              <td scope="row">{{ product.id }}</td>
+                              <td>{{ product.title }}</td>
+                              <td>
+                                {% for category in product.category.all %}
+                                  {{category.title}}
+                                  {% if not forloop.last %},{% endif %}
+                                {% empty %}
+                                ---
+                                {% endfor %}
+                              </td>  <!-- Replace with actual category if applicable -->
+                              <td>{{ product.show_discounted_price|format_persian_price }}</td>
+                              <td>{{ product.stock }}</td>
+                              {% if product.is_published %}
+                              <td><span class="badge bg-success">نشر شده</span></td>
+                              {% else %}
+                              <td><span class="badge bg-danger">عدم انتشار</span></td>
+                              {% endif %}
+                              {% if product.is_discounted %}
+                              <td>{{ product.discount }}</td>
+                              {% else %}
+                              <td>ندارد</td>
+                              {% endif %}
+                              <td class="d-flex flex-column">
+                                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'dashboard:admin:product_update' product.id %}" title="ویرایش"><i class="bi bi-pencil-square"></i></a>
+                                  {% if product.is_published %}
+                                  <a class="btn btn-sm btn-outline-primary mt-2" href="{% url 'shop:product_detail' product.slug %}" title="مشاهده"><i class="bi bi-eye"></i></a>
+                                  {% endif %}
+
+                                  <a class="btn btn-sm btn-danger my-2" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-url="{% url 'dashboard:admin:product_delete' product.id %}" title="حذف" onclick="setDeleteUrl(this)"><i class="bi bi-trash"></i></a>
+                              </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+              {% comment %} actions  {% endcomment %}
+              <div class="d-flex justify-content-between mt-4">
+                <div>
+                    <select name="action" class="form-select" required>
+                        <option value="" selected disabled>عملیات دسته جمعی</option>
+                        <option value="unpublish_selected">عدم انتشار</option>
+                        <option value="publish_selected">انتشار</option>
+                        <option value="delete_selected">حذف کردن</option>
+                        <option value="without_discount">برداشتن تخفیف</option>
+                        <!-- You can add more actions here -->
+                    </select>
+                    <button type="submit" class="btn btn-warning mx-2 mt-1">اجرا</button>
+                </div>
+              </div>
+            </form>
+          </div>
+    
+         
+
+          
+          {% include "includes/pagination.html" %}
+
+
+
+        </div>
+        <!-- End Row -->
+
+      </div>
+      <!-- End Body -->
+    </div>
+    <!-- End Card -->
+     {% include "dashboard/includes/modal.html" %}
+  </div>
+  <!-- End Col -->
+{% endblock admin_dashboard_body %}
+
+{% block extra_js %}
+<script>
+  $("#adminProduct").addClass('active');
+
+  $(document).ready(function() {
+      setTimeout(function() {
+          $('.alert.alert-danger').fadeOut();
+      }, 3000);
+  });
+</script>
+
+<script>
+  function getPage(page_number){
+    let searchParams = new URLSearchParams(window.location.search)
+    searchParams.set('page', page_number)
+
+    window.location.href =  window.location.pathname + "?" + searchParams.toString()
+
+  }
+
+  $(document).ready(function(){
+    let searchParams = new URLSearchParams(window.location.search)
+    $('#productname').val(searchParams.get("product-name") || "")
+    $('#categorySelect').val(searchParams.get("category") || "")
+    $('#select-order-by').val(searchParams.get("order-by") || "")
+    $('#ispublishedSelect').val(searchParams.get("ispublished") || "")
+
+
+    $('#select-all').change(function() {
+      $('input[name="selected_products"]').prop('checked', this.checked);
+    });
+
+  });
+</script>
+
+
+<script>
+  function setDeleteUrl(button) {
+      var url = button.getAttribute('data-url');
+      $('#confirmDeleteBtn').attr('action', url);
+  }
+</script>
+{% endblock extra_js %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">
+  داشبورد ادمین
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+  محصولات
+</li>
+{% endblock breadcrumb %}

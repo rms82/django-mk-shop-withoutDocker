@@ -1,0 +1,65 @@
+{% extends "dashboard/customer/base.html" %}
+
+
+
+{% block customer_dashboard_body %}
+{% include "dashboard/includes/profile_change.html" %}
+{% endblock customer_dashboard_body %}
+
+
+
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">داشبورد مشتری</li>
+<li class="breadcrumb-item" aria-current="page">
+   ویرایش پروفایل
+</li>
+{% endblock breadcrumb %}
+
+
+
+
+{% block extra_js %}
+<script>
+  $("#customerChange").addClass('active');
+
+  $(document).ready(function() {
+    setTimeout(function() {
+        $('.alert.alert-danger').fadeOut();
+    }, 3000);
+
+    $('#ProfileImage').on('change', function() {
+      var fileName = $(this).val().split('\\').pop(); // Extract file name from path
+      $('#file-name').text(`"فایل انتخاب شده: ${fileName}"`); // Display file name
+    });
+
+  // Clear file input and file name when clicking the clear button
+  });
+
+  function clearPhoneNumber() {
+    $('#phoneLabel').val('');
+  }
+
+</script>
+
+
+<script>
+  function clearProfileImage(){
+    $.ajax({
+      type: "POST",
+      url: "{% url 'dashboard:reset_profile_image' %}",
+      data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+      },
+      success: function(resultData) {
+        window.location.reload();
+      },
+      error: function() {
+          alert('Failed to delete item.');
+      }
+    });
+  }
+</script>
+{% endblock extra_js %}
+

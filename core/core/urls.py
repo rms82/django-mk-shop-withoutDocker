@@ -25,7 +25,12 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    
+    path("", include("pages.urls")),
+    path("accounts/", include("accounts.urls")),
+    path("shop/", include("shop.urls")),
+    path("cart/", include("cart.urls")),
+    path("dashboard/", include("dashboard.urls")),
+    path("order/", include("order.urls")),
 ]
 
 

@@ -1,0 +1,130 @@
+{% extends "dashboard/admin/base.html" %}
+{% load static %}
+{% load number_filters %}
+
+
+
+
+{% block admin_dashboard_body %}
+<div class="col-lg-9">
+  <!-- Card -->
+  <div class="card">
+      <!-- Header -->
+      <div class="card-header border-bottom">
+          <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">ویرایش تیکت</h5>
+              {% if ticket.is_published %}
+              <a class="btn btn-primary" href="{% url 'shop:ticket_detail' ticket.slug %}">مشاهده محصول</a>
+              {% endif %}
+          </div>
+      </div>
+      <!-- End Header -->
+
+      <!-- Body -->
+      <form method='post' enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="card-body">
+              <div class="row">
+                  <div class="col-md-12 mb-4 text-center">
+                      <span class='fw-bold'>آیدی تیکت: {{ticket.id}}</span>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                      <label class="form-label">نام فرستنده تیکت</label>
+                      <p class="form-control-plaintext">
+                          {% if ticket.name %}
+                          {{ticket.name}}
+                          {% else %}
+                          بدون نام
+                          {% endif %}
+                      </p>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                      <label class="form-label">ایمیل فرستنده تیکت</label>
+                      <p class="form-control-plaintext">{{ticket.email}}</p>
+                  </div>
+
+                  <div class="col-md-12 mb-3">
+                      <label class="form-label">پیام تیکت</label>
+                      <div class="quill-custom">
+                          {{form.message}}
+                          {% if form.message.errors %}
+                          <div class="alert alert-danger mt-2">
+                              {% for error in form.message.errors %}
+                              <div>{{ error }}</div>
+                              {% endfor %}
+                          </div>
+                          {% endif %}
+                      </div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                      <label class="form-label">رسیدگی شده</label>
+                      {{form.is_resolved}}
+                      
+                      {% if form.is_resolved.errors %}
+                      <div class="alert alert-danger mt-2">
+                          {% for error in form.is_resolved.errors %}
+                          <div>{{ error }}</div>
+                          {% endfor %}
+                      </div>
+                      {% endif %}
+                  </div>
+              </div>
+          </div>
+          <div class="card-footer">
+              <div class="d-flex justify-content-end">
+                  <a class="btn btn-danger me-3" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-url="{% url 'dashboard:admin:ticket_delete' ticket.pk %}" title="حذف" onclick="setDeleteUrl(this)">
+                      <i class="bi bi-trash"></i>
+                  </a>
+                  <a class="btn btn-secondary me-3" href="{% url 'dashboard:admin:tickets' %}">بازگشت</a>
+                  <button class="btn btn-primary  me-3" type="submit">ثبت تغییرات</button>
+              </div>
+          </div>
+      </form>
+      {{form.errors}}
+
+      <!-- Include Modal -->
+      {% include "dashboard/includes/modal.html" %}
+  </div>
+  <!-- End Card -->
+</div>
+
+{% endblock admin_dashboard_body %}
+
+
+
+{% block extra_js %}
+<script>
+  $("#adminProduct").addClass('active');
+
+  $(document).ready(function() {
+      setTimeout(function() {
+          $('.alert.alert-danger').fadeOut();
+      }, 6000);
+  });
+</script>
+
+<script>
+  function setDeleteUrl(button) {
+      var url = button.getAttribute('data-url');
+      $('#confirmDeleteBtn').attr('action', url);
+  }
+</script>
+{% endblock extra_js %}
+
+
+
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">
+  داشبورد ادمین
+</li>
+
+
+<li class="breadcrumb-item active" aria-current="page">
+     تیکت اپدیت
+</li>
+{% endblock breadcrumb %}

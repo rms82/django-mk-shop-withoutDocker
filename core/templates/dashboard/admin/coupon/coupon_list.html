@@ -1,0 +1,247 @@
+{% extends "dashboard/admin/base.html" %}
+{% load static %}
+{% load number_filters %}
+
+{% block extra_css %}
+<style>
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .table th, .table td {
+    text-align: center;
+  }
+  .table .btn {
+    margin: 0 2px;
+  }
+</style>
+
+{% endblock extra_css %}
+
+{% block admin_dashboard_body %}
+<div class="col-lg-9">
+    <!-- Card -->
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="">لیست کد های نخفیف</h5>
+          <a class="btn btn-primary" href="{% url "dashboard:admin:add_coupon" %}">اضافه کردن</a>
+        </div>
+      </div>
+      <!-- End Header -->
+
+      <!-- Body -->
+      <div class="card-body">
+        <div class="container pb-5">
+          <form class="row" action='.'>
+            
+
+            <!-- Input Card -->
+            <div class="col-md-6 py-1">
+              <input type="text" class="form-control" placeholder="جستجوی" aria-label="جستجوی کد" id="couponname" name="coupon-name">
+
+            </div>
+            <!-- End Input Card -->
+            <div class="col-md-6 py-1">
+              <select class="form-select" id='select-order-by' name='order-by'>
+                <option value="" selected>مرتب سازی بر اساس </option>
+                <option value="-created_date">جدیدترین</option>
+                <option value="created_date">قدیمی ترین</option>
+             
+              </select>
+            </div>
+            
+
+            
+           
+            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center p-3 mx-auto">
+              <button type="submit" class="btn btn-primary mx-2">
+                <i class="bi bi-search"></i>
+              </button>
+              <a class="btn btn-secondary" href="{% url 'dashboard:admin:coupons' %}">
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+
+          </form>
+
+        </div>
+        {% comment %} actions  {% endcomment %}
+        
+      
+      
+
+        <div class="row">
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-between mt-4">
+              <div class="">
+                <select class="form-select form-select" id="admin-coupon-page-number">
+                  <option value="" selected>تعداد در صفحه</option>
+                  <option value="9">9</option>
+                  <option value="18">18</option>
+                  <option value="27">27</option>
+                  <option value="45">45</option>
+                  <option value="{{coupon_count}}">همه کد ها</option>
+                </select>
+              </div>
+              <div  class="d-flex">
+                  <select name="action" class="form-select" required>
+                      <option value="" selected disabled>عملیات دسته جمعی</option>
+                      <option value="unpublish_selected">عدم انتشار</option>
+                      <option value="publish_selected">انتشار</option>
+                      <option value="delete_selected">حذف کردن</option>
+                      <option value="without_discount">برداشتن تخفیف</option>
+                      <!-- You can add more actions here -->
+                  </select>
+                  <button type="submit" class="btn btn-warning mx-2">اجرا</button>
+              </div>
+            </div>
+            
+            <!-- Table -->
+            <div class="container-fluid mt-3">
+              <!-- Wrap the table with table-responsive -->
+              <span>
+                تعداد محصولات:  {{coupon_count}}
+              </span>
+                {% csrf_token %}
+                {% comment %} products {% endcomment %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                              
+                                <th scope="col"><input type="checkbox" id="select-all"></th> <!-- Select all checkbox -->
+                                <th scope="col">ID</th>
+                                <th scope="col">کد</th>
+                                <th scope="col">درصد تخفیف</th>
+                                <th scope="col">تعداد قابل استفاده</th>
+                                <th scope="col">تعداد کاربرات استفاده کرده</th>
+                                <th scope="col">تاریخ منقضی </th>
+                                <th scope="col">عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for coupon in coupons %}
+                            <tr class="text-center">
+                                <td><input type="checkbox" name="selected_coupons" value="{{ coupon.id }}"></td>
+                                <td scope="row">{{ coupon.id }}</td>
+                                <td>{{ coupon.code }}</td>
+                                
+                                <td>{{ coupon.discount_percent }}</td>
+
+                                <td>{{ coupon.max_uses }}</td>
+                                <td>{{ coupon.used_by_count }}</td>
+
+                                {% if coupon.expired %}
+                                <td>{{ coupon.expired }}</td>
+                                {% else %}
+                                <td>بدون محدودیت زمانی</td>
+                                {% endif %}
+
+
+                                <td class="d-flex flex-column">
+                                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'dashboard:admin:coupon_update' coupon.id %}" title="ویرایش"><i class="bi bi-pencil-square"></i></a>
+
+                                  
+                                    <a class="btn btn-sm btn-danger my-2" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-url="" title="حذف" onclick="setDeleteUrl(this)"><i class="bi bi-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                
+              
+            </div>
+          </form>
+      
+          {% include "includes/pagination.html" %}
+
+
+
+        </div>
+        <!-- End Row -->
+
+      </div>
+      <!-- End Body -->
+    </div>
+    <!-- End Card -->
+     {% include "dashboard/includes/modal.html" %}
+  </div>
+  <!-- End Col -->
+{% endblock admin_dashboard_body %}
+
+{% block extra_js %}
+<script>
+  $("#adminCoupon").addClass('active');
+
+  $(document).ready(function() {
+      setTimeout(function() {
+          $('.alert.alert-danger').fadeOut();
+      }, 3000);
+  });
+</script>
+
+<script>
+  function getPage(page_number){
+    let searchParams = new URLSearchParams(window.location.search)
+    searchParams.set('page', page_number)
+
+    window.location.href =  window.location.pathname + "?" + searchParams.toString()
+
+  }
+
+  $(document).ready(function(){
+    let searchParams = new URLSearchParams(window.location.search)
+    $('#couponname').val(searchParams.get("coupon-name") || "")
+    $('#categorySelect').val(searchParams.get("category") || "")
+    $('#select-order-by').val(searchParams.get("order-by") || "")
+    $('#ispublishedSelect').val(searchParams.get("ispublished") || "")
+    $('#admin-coupon-page-number').val(searchParams.get("page-size") || "")
+
+
+    $('#select-all').change(function() {
+      $('input[name="selected_coupons"]').prop('checked', this.checked);
+    });
+
+
+  });
+</script>
+
+
+<script>
+  $("#admin-coupon-page-number").change(function(){
+    let searchParams = new URLSearchParams(window.location.search)
+    let selectedValue = $(this).val()
+    
+    
+    searchParams.set('page-size', selectedValue)
+    searchParams.set('page', "1")
+    window.location.href =  window.location.pathname + "?" + searchParams.toString()
+    
+
+  });
+</script>
+
+
+
+<script>
+  function setDeleteUrl(button) {
+      var url = button.getAttribute('data-url');
+      $('#confirmDeleteBtn').attr('action', url);
+  }
+</script>
+{% endblock extra_js %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">
+  داشبورد ادمین
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+  کد های تخفیف
+</li>
+{% endblock breadcrumb %}

@@ -1,0 +1,167 @@
+{% extends "dashboard/customer/base.html" %}
+{% load static %}
+
+
+{% block customer_dashboard_body %}
+<div class="col-lg-9">
+    <!-- Card -->
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header border-bottom">
+        <h5 class="card-header-title">مشخصات آدرس</h5>
+      </div>
+      <!-- End Header -->
+
+      <!-- Body -->
+      <form method='post' enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card-body">
+            <div class="row d-flex ">
+
+              <div class="col-md-6 mb-3">
+                <label for="validationValidInput1">استان:</label>
+                {{form.ostan}}
+                {% if form.ostan.errors %}
+                    {% for error in form.ostan.errors %}
+                        <div class="alert alert-danger text-center mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="validationValidInput2">شهرستان</label>
+                <select id="id_shahrestan" class='form-select' name='shahrestan'>
+                    <option value="">استان را انتخاب کنید</option>
+
+                </select>
+
+                {% if form.shahrestan.errors %}
+                    {% for error in form.shahrestan.errors %}
+                        <div class="alert alert-danger text-center mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="validationValidSelect1">آدرس</label>
+                {{form.address}}
+                {% if form.address.errors %}
+                    {% for error in form.address.errors %}
+                        <div class="alert alert-danger text-center mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="validationValidSelect1">کد پستی</label>
+                {{form.postal_code}}
+                {% if form.postal_code.errors %}
+                    {% for error in form.postal_code.errors %}
+                        <div class="alert alert-danger text-center mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label for="validationValidSelect1">تلفن گیرنده</label>
+                {{form.receiver_phonenumber}}
+                {% if form.receiver_phonenumber.errors %}
+                    {% for error in form.receiver_phonenumber.errors %}
+                        <div class="alert alert-danger text-center mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              </div>
+
+
+
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class=" d-flex pt-5 justify-content-end">
+            <a class="btn btn-secondary ms-3" href="{% url 'dashboard:customer:address_list' %}">بازگشت</a>
+            <button class="btn btn-primary ms-3" type="submit">ذخیره تغییرات</button>
+          </div>
+        </div>
+      </form>
+
+
+    <!-- End Body -->
+</div>
+
+<!-- End Card -->
+{% endblock customer_dashboard_body %}
+
+
+
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">داشبورد کاربری</li>
+<li class="breadcrumb-item" aria-current="page">
+    آدرس ها
+</li>
+{% endblock breadcrumb %}
+
+
+
+{% block extra_js %}
+<script>
+  $("#customerAddress").addClass('active');
+
+  $(document).ready(function() {
+    setTimeout(function() {
+        $('.alert.alert-danger').fadeOut();
+    }, 3000);
+
+    shahrestan_list($('#id_ostan').val())
+
+    
+
+    $('#id_ostan').change(function() {
+        var ostanId = $(this).val();
+        shahrestan_list(ostanId)
+
+    });
+
+  });
+
+  function shahrestan_list(ostanId){
+    $.ajax({
+        url: '{% url "dashboard:customer:get_shahrestan" %}',  // Your URL to get Shahrestans
+        data: {
+            ostan_id: ostanId
+        },
+        success: function(data) {
+            var options = '<option value="">شهر را انتخاب کنید</option>';
+            data.shahrestans.forEach(function(item) {
+                if(item.name == '{{address.shahrestan}}'){
+                    options += `<option value="${item.id}" selected>${item.name}</option>`;
+                }
+                else{
+                    options += `<option value="${item.id}">${item.name}</option>`;
+                }
+            });
+
+            $('#id_shahrestan').html(options);
+        }
+
+
+    });
+  }
+
+
+</script>
+
+{% endblock extra_js %}
+

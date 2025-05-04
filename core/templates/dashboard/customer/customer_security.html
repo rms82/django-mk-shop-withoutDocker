@@ -1,0 +1,28 @@
+{% extends "dashboard/customer/base.html" %}
+{% load static %}
+
+{% block customer_dashboard_body %}
+{% include "dashboard/includes/security.html" %}
+{% endblock customer_dashboard_body %}
+
+{% block extra_js %}
+<script>
+  $("#custoemrSecurity").addClass('active');
+
+  $(document).ready(function() {
+      setTimeout(function() {
+          $('.alert.alert-danger').fadeOut();
+      }, 3000);
+  });
+</script>
+{% endblock extra_js %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">
+  داشبورد مشتری
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+  امنیت
+</li>
+{% endblock breadcrumb %}

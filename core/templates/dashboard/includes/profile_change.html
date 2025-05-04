@@ -1,0 +1,121 @@
+<div class="col-lg-9">
+    <div class="d-grid gap-3 gap-lg-5">
+      <!-- Card -->
+      <div class="card">
+        <div class="card-header border-bottom">
+          <h4 class="card-header-title">اطلاعات پایه</h4>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+          <form method='post' enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Form -->
+            <div class="row mb-4">
+              <label class="col-sm-3 col-form-label form-label">عکس پروفایل</label>
+
+              <div class="col-sm-9">
+                <!-- Media -->
+                <div class="d-flex align-items-center">
+                  <!-- Avatar -->
+                  <label class="avatar avatar-xl avatar-circle" for="avatarUploader">
+                    <img id="avatarImg" class="avatar-img" src="{{form.instance.image.url}}"
+                      alt="Image Description">
+                  </label>
+
+                  <div class="d-grid d-sm-flex gap-2 me-4">
+                    <div class="form-group">
+                      <input type="file" id="ProfileImage" name="image" class="d-none" accept="image/*">
+                      <label for="ProfileImage" class="btn btn-primary btn-sm file-upload-label">
+                          <i class="fas fa-upload"></i> آپلود عکس
+                      </label>
+                      <button type="button" id="clear-image" class="btn btn-white btn-sm" onclick="clearProfileImage()">حذف کردن</button>
+                      <div id="file-name" class="mt-2"></div> <!-- Display file name here -->
+                    </div>
+                    <!-- End Avatar -->
+                  </div>
+                </div>
+
+                {% if form.image.errors %}
+                    {% for error in form.image.errors %}
+                        <div class="alert alert-danger text-center mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <!-- End Media -->
+              </div>
+            </div>
+            <!-- End Form -->
+
+            <!-- Form -->
+            <div class="row mb-4">
+              <label for="firstNameLabel" class="col-sm-3 col-form-label form-label">نام کامل<i
+                  class="bi-question-circle text-body ms-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                  title="در فرم ها وصفحات نام شما نمایش داده میشود"></i></label>
+
+              <div class="col-sm-9">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="first_name" id="firstNameLabel"
+                    value="{{ form.first_name.value }}">
+                  <input type="text" class="form-control" name="last_name" id="lastNameLabel"
+                  value="{{ form.last_name.value }}">
+                </div>
+                {% if form.last_name.errors %}
+                    {% for error in form.last_name.errors %}
+                        <div class="alert alert-danger text-center mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            <!-- End Form -->
+
+            
+
+            <!-- Form -->
+            <div class="js-add-field row mb-4">
+              <label for="phoneLabel" class="col-sm-3 col-form-label form-label">تلفن <span
+                  class="form-label-secondary">(اختیاری)</span></label>
+
+                  <div class="col-sm-9">
+                    <div class="input-group">
+                        {% if form.instance.phone_number %}
+                        <input type="text" class="js-input-mask form-control" name="phone_number" id="phoneLabel" value="{{ form.instance.phone_number }}">
+                        {% else %}
+                        <input type="text" class="js-input-mask form-control" name="phone_number" id="phoneLabel">
+                        {% endif %}
+                
+                        <!-- Clear Button -->
+                        <button type="button" class="btn btn-outline-secondary" onclick="clearPhoneNumber()">پاک کردن</button>
+                    </div>
+                
+                    {% if form.phone_number.errors %}
+                    {% for error in form.phone_number.errors %}
+                        <div class="alert alert-danger text-center mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <!-- End Form -->
+
+            
+            <!-- Footer -->
+            <div class="d-flex justify-content-end gap-3">
+                <a class="btn btn-danger" href="{% url 'dashboard:admin:admin_dashboard' %}">لغو</a>
+                <button class="btn btn-primary" type='submit'>ذخیره تغییرات</button>
+            </div>
+            <!-- End Footer -->
+          </form> 
+        </div>
+        <!-- End Body -->
+      </div>
+      <!-- End Card -->
+
+    </div>
+</div>
+  <!-- End Col -->

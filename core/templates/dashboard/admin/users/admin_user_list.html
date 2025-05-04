@@ -1,0 +1,220 @@
+{% extends "dashboard/admin/base.html" %}
+{% load static %}
+
+
+{% block extra_css %}
+<style>
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .table th, .table td {
+    text-align: center;
+  }
+  .table .btn {
+    margin: 0 2px;
+  }
+</style>
+
+{% endblock extra_css %}
+
+{% block admin_dashboard_body %}
+<div class="col-lg-9">
+    <!-- Card -->
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="">لیست کاربر ها</h5>
+        </div>
+      </div>
+      <!-- End Header -->
+
+      <!-- Body -->
+      <div class="card-body">
+        <div class="container pb-5">
+          <form class="row" action='.'>
+            
+
+            <!-- Input Card -->
+            <div class="col-md-6 py-1">
+              <input type="text" class="form-control" placeholder="جستجوی" aria-label="جستجوی ایمیل" id="ticketname" name="ticket-name">
+
+            </div>
+            <!-- End Input Card -->
+            
+            <!-- New Filter for Published Status -->
+            <div class="col-md-6 py-1">
+              <select class="form-select" name="isresolved" id="isresolvedSelect">
+                <option value="" selected>وضعیت پیگیری</option>
+                <option value="1">رسیدگی شده</option>
+                <option value="0">عدم رسیدگی</option>
+              </select>
+            </div>
+            <!-- End New Filter -->
+            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center p-3 mx-auto">
+              <button type="submit" class="btn btn-primary mx-2">
+                <i class="bi bi-search"></i>
+              </button>
+              <a class="btn btn-secondary" href="{% url 'dashboard:admin:tickets' %}">
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="row">
+          <!-- Table -->
+          <div class="container-fluid">
+            <!-- Wrap the table with table-responsive -->
+            <span>
+              تعداد کاربران:  {{users_count}}
+            </span>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+
+                            <th scope="col">ایمیل</th>
+                            <th scope="col">عملیات</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr class="text-center">
+                            <th scope="row">{{ user.id }}</th>
+                            <td>{{ user.user__email }}</td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href="{% url 'dashboard:admin:user_update' user.id %}" title="ویرایش"><i class="bi bi-pencil-square"></i></a>
+                                <a class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-url="{% url 'dashboard:admin:user_delete' user.id %}" title="حذف" onclick="setDeleteUrl(this)"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center">کاربری یافت نشد</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+          </div>
+    
+         
+
+
+          <!-- Pagination -->
+          <div class="row pt-5 mt-3">
+            {% if page_obj.has_other_pages %}
+          <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+              {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <button class="page-link" onClick="getPage({{ page_obj.previous_page_number }})" aria-label="Previous">
+                    <span aria-hidden="true">
+                      <i class="bi-chevron-double-right small"></i>
+                    </span>
+                  </button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">
+                      <i class="bi-chevron-double-right small"></i>
+                    </span>
+                  </a>
+                </li>
+              {% endif %}
+          
+              {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                  <li class="page-item active"><button class="page-link">{{ i }}</button></li>
+                {% else %}
+                  <li class="page-item"><button class="page-link" onClick="getPage({{ i }})">{{ i }}</button></li>
+                {% endif %}
+              {% endfor %}
+          
+              {% if page_obj.has_next %}
+                <li class="page-item">
+                  <button class="page-link" onClick="getPage({{ page_obj.next_page_number }})" aria-label="Next">
+                    <span aria-hidden="true">
+                      <i class="bi-chevron-double-left small"></i>
+                    </span>
+                  </button>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">
+                      <i class="bi-chevron-double-left small"></i>
+                    </span>
+                  </a>
+                </li>
+              {% endif %}
+
+            </ul>
+          </nav>
+        {% endif %}
+          </div>
+          <!-- End Pagination -->
+
+
+
+        </div>
+        <!-- End Row -->
+
+      </div>
+      <!-- End Body -->
+    </div>
+    <!-- End Card -->
+    {% include "dashboard/includes/modal.html" %}
+  </div>
+  <!-- End Col -->
+{% endblock admin_dashboard_body %}
+
+{% block extra_js %}
+<script>
+  $("#adminUsers").addClass('active');
+
+  $(document).ready(function() {
+      setTimeout(function() {
+          $('.alert.alert-danger').fadeOut();
+      }, 3000);
+  });
+</script>
+
+<script>
+  function getPage(page_number){
+    let searchParams = new URLSearchParams(window.location.search)
+    searchParams.set('page', page_number)
+
+    window.location.href =  window.location.pathname + "?" + searchParams.toString()
+
+  }
+
+  $(document).ready(function(){
+    let searchParams = new URLSearchParams(window.location.search)
+    $('#ticketname').val(searchParams.get("ticket-name") || "")
+    $('#isresolvedSelect').val(searchParams.get("isresolved") || "")
+  });
+</script>
+
+<script>
+  function setDeleteUrl(button) {
+      var url = button.getAttribute('data-url');
+      $('#confirmDeleteBtn').attr('action', url);
+  }
+</script>
+{% endblock extra_js %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">
+  داشبورد ادمین
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+  کاربر ها
+</li>
+{% endblock breadcrumb %}

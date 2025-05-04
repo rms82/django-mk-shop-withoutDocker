@@ -1,0 +1,191 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}
+داشبورد
+{% endblock title %}
+
+{% block body %}
+  <!-- ========== MAIN CONTENT ========== -->
+  <main id="content" role="main" class="bg-light">
+    <!-- Breadcrumb -->
+    <div class="navbar-dark"style="
+          background-image: url({% static 'svg/components/wave-pattern-light.svg' %});
+          background-color:#2C3E50;
+        ">
+      <div class="container content-space-1 content-space-b-lg-3">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="d-none d-lg-block">
+              <h1 class="h2 text-white">داشبورد</h1>
+            </div>
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb breadcrumb-light mb-0">
+              {% block breadcrumb %}
+                
+              {% endblock breadcrumb %}
+              </ol>
+            </nav>
+            
+            <!-- End Breadcrumb -->
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+            <!-- Responsive Toggle Button -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+              data-bs-target="#sidebarNav" aria-controls="sidebarNav" aria-expanded="false"
+              aria-label="Toggle navigation">
+              <span class="navbar-toggler-default">
+                <i class="bi-list"></i>
+              </span>
+              <span class="navbar-toggler-toggled">
+                <i class="bi-x"></i>
+              </span>
+            </button>
+            <!-- End Responsive Toggle Button -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+    </div>
+    <!-- End Breadcrumb -->
+
+    <!-- Content Section -->
+    <div class="container content-space-1 content-space-t-lg-0 content-space-b-lg-2 mt-lg-n10">
+      <div class="row">
+        <div class="col-lg-3">
+          <!-- Navbar -->
+          <div class="navbar-expand-lg navbar-light">
+            <div id="sidebarNav" class="collapse navbar-collapse navbar-vertical">
+              <!-- Card -->
+              <div class="card flex-grow-1 mb-5">
+                <div class="card-body">
+                  <!-- Avatar -->
+                  <div class="d-none d-lg-block text-center mb-5">
+                    <div class="avatar avatar-xxl avatar-circle mb-3">
+                      {% if request.user.profile.image %}
+                        <img class="avatar-img" src="{{request.user.profile.image.url}}" alt="Image Description" />
+                      {% else %}
+                        <img class="avatar-img" src="{% static "default_profile.jpg" %}" alt="Image Description" />
+                      {% endif %}
+                      
+                    </div>
+
+                    <h4 class="card-title mb-0">{{ request.user.profile.fullname }}</h4>
+                    <p class="card-text small">{{request.user.email}}</p>
+                  </div>
+                  <!-- End Avatar -->
+
+                  <!-- Nav -->
+                  <span class="text-cap">حساب</span>
+
+                  <!-- List -->
+                  <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'dashboard:admin:admin_dashboard' %}" id='dashboardHome'>
+                        <i class="bi-person-badge nav-icon"></i>داشبورد
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'dashboard:admin:security' %}" id="adminSecurity">
+                        <i class="bi-shield-shaded nav-icon"></i> امنیت
+                      </a>
+                    </li>
+
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'dashboard:admin:change' %}" id="dashboardAdminChange">
+                        <i class="bi-sliders nav-icon"></i> تنظیمات پروفایل
+                      </a>
+                    </li>
+                  </ul>
+                  <!-- End List -->
+
+                  <span class="text-cap">فروشگاه</span>
+
+                  <!-- List -->
+                  <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
+                    <li class="nav-item">
+                      <a class="nav-link" id='adminProduct' href="{% url 'dashboard:admin:products' %}">
+                        <i class="bi-shop-window nav-icon"></i> محصولات
+                        
+                      </a>
+
+                      <span class='text-info'>
+                        {% block product_block %}{% endblock product_block %}
+                      </span>
+
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link " href="./admin-account-order.html">
+                        <i class="bi-receipt-cutoff nav-icon"></i> سفارشات
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link " href="{% url 'dashboard:admin:coupons' %}" id='adminCoupon'>
+                        <i class="bi-tag nav-icon"></i> کد های تخفیف
+                      </a>
+                    </li>
+                    
+
+
+                  </ul>
+
+                  <span class="text-cap">کاربران</span>
+
+                   <!-- List -->
+                   <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
+                    <li class="nav-item">
+                      <a class="nav-link" id='adminUsers' href="{% url 'dashboard:admin:users' %}">
+                        <i class="bi-person nav-icon"></i> لیست کاربران
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link " href="./admin-account-newsletter.html">
+                        <i class="bi-newspaper nav-icon"></i> خبرنامه
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="adminTickets" href="{% url 'dashboard:admin:tickets' %}">
+                       <i class="bi-envelope nav-icon"></i> تیکت ها
+                     </a>
+                   </li>
+
+                  </ul>
+
+                  <!-- End List -->
+
+                  <div class="d-lg-none">
+                    <div class="dropdown-divider"></div>
+
+                    <!-- List -->
+                    <ul class="nav nav-sm nav-tabs nav-vertical">
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">
+                          <i class="bi-box-arrow-right nav-icon"></i> خروج
+                        </a>
+                      </li>
+                    </ul>
+                    <!-- End List -->
+                  </div>
+                  <!-- End Nav -->
+                </div>
+              </div>
+              <!-- End Card -->
+            </div>
+          </div>
+          <!-- End Navbar -->
+        </div>
+        <!-- End Col -->
+
+        {% block admin_dashboard_body %}{% endblock admin_dashboard_body %}
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Content Section -->
+  </main>
+  <!-- ========== END MAIN CONTENT ========== -->
+{% endblock body %}

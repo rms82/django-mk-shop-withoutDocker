@@ -41,9 +41,21 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # myapps
+    "accounts",
+    "pages",
+    "shop",
+    "cart",
+    "order",
+    "dashboard",
+    # third party apps
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
+    #thid party 
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    #django
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -118,7 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = config('LANGUAGE_CODE')
+LANGUAGE_CODE = config("LANGUAGE_CODE")
 
 TIME_ZONE = "UTC"
 
@@ -145,3 +157,22 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# user model
+AUTH_USER_MODEL = "accounts.CustomUser"
+
+
+# debug toolbar settings
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
+
+#email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
