@@ -6,6 +6,7 @@ from accounts.models import CustomUser, Profile
 
 @receiver(post_save, sender=CustomUser,)
 def profile_signal(sender, instance, created,**kwargs):
+    pass
     if created:
         Profile.objects.create(user=instance, pk=instance.pk)
 
