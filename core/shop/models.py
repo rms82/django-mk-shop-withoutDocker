@@ -83,3 +83,20 @@ class Product(TitleSlugDateModel):
 
     def get_absolute_url(self):
         return reverse("dashboard:admin:product_update", kwargs={"pk": self.pk})
+
+
+
+def product_image_upload_to(instance, filename):
+    return f'products/images/{instance.product.slug}/{filename}'
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=product_image_upload_to)
+    alt_text = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"Image for {self.product.title}"
+
+    class Meta:
+        verbose_name = 'Product Image'
+        verbose_name_plural = 'Product Images'

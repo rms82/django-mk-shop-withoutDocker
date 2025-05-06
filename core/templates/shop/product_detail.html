@@ -1,7 +1,14 @@
 {% extends "_base.html" %}
 {% load static %}
 
+{% block extra_css %}
+<style>
 
+
+</style>
+
+
+{% endblock extra_css %}
 
 {% block body %}
   <!-- ========== MAIN CONTENT ========== -->
@@ -9,7 +16,7 @@
     <!-- Hero -->
     <div class="container content-space-t-1 content-space-t-sm-2">
       <div class="row">
-        <div class="col-md-7 mb-7 mb-md-0">
+        <div class="col-md-7 mb-7 mb-md-0 product-images">
           <div class="pe-md-4">
             <div class="card-pinned">
               <!-- Swiper Main Slider -->
@@ -18,31 +25,17 @@
                   <!-- Slide -->
                   <div class="swiper-slide">
                     <div class="card card-bordered shadow-none">
-                      <img class="card-img" src="{{ product.image.url}}" alt="Image Description">
+                      <img class="card-img" src="{{ product.image.url}}" alt="Image Description" id="main-product-image">
                     </div>
                   </div>
                   <!-- End Slide -->
 
-                  <!-- Slide -->
-                  <div class="swiper-slide">
-                    <div class="card card-bordered shadow-none">
-                      <img class="card-img" src="{{ product.image.url}}" alt="Image Description">
-                    </div>
-                  </div>
-                  <!-- End Slide -->
-
-                  <!-- Slide -->
-                  <div class="swiper-slide">
-                    <div class="card card-bordered shadow-none">
-                      <img class="card-img" src="{{ product.image.url}}" alt="Image Description">
-                    </div>
-                  </div>
-                  <!-- End Slide -->
+             
                 </div>
 
                 <!-- Arrows -->
-                <div class="js-swiper-shop-product-button-next swiper-button-next"></div>
-                <div class="js-swiper-shop-product-button-prev swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
               </div>
               <!-- End Swiper Main Slider -->
 
@@ -53,7 +46,18 @@
                     <!-- Slide -->
                     <div class="swiper-slide">
                       <a class="avatar avatar-circle" href="javascript:;">
-                        <img class="avatar-img" src="{% static 'img/160x160/img11.jpg' %}" alt="Image Description">
+
+                        {% if product.images.all %}
+                          <div class="d-flex ">
+                            {% for image in product.images.all %}
+                              <div class="">
+                                <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="rounded mx-1" style="width: 50px; height: 50px;"/>
+                              </div>
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+
+                        {% comment %} <img class="avatar-img" src="{% static 'img/160x160/img11.jpg' %}" alt="Image Description"> {% endcomment %}
                       </a>
                     </div>
                     <!-- End Slide -->
@@ -866,3 +870,40 @@
 
 
 {% endblock body %}
+
+
+{% block extra_js %}
+<script>
+  $(document).ready(function() {
+    var images = [
+    {% for image in product.images.all %}
+          "{{ image.image.url }}",
+    {% endfor %}
+    ]; // مسیر تصاویر خود را وارد کنید
+    var currentIndex = 0;
+  
+    // نمایش تصویر فعلی
+    function showImage(index) {
+      $('#main-product-image').attr('src', images[index]);
+    }
+  
+    // دکمه قبلی
+    $('.swiper-button-prev').click(function() {
+      currentIndex--;
+      if (currentIndex < 0) {
+        currentIndex = images.length - 1; // به اولین تصویر برگردیم
+      }
+      showImage(currentIndex);
+    });
+  
+    // دکمه بعدی
+    $('.swiper-button-next').click(function() {
+      currentIndex++;
+      if (currentIndex >= images.length) {
+        currentIndex = 0; // به اولین تصویر برگردیم
+      }
+      showImage(currentIndex);
+    });
+  });
+</script>
+{% endblock extra_js %}

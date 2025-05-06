@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 
-from shop.models import ProductCategory, Product, ProductStatus
+from shop.models import ProductCategory, Product, ProductStatus, ProductImage
 
 
 # Register your models here.
@@ -15,6 +15,13 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     )
 
     ordering = ("-id",)
+
+
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 1  
+    max_num = 7  
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -29,6 +36,7 @@ class ProductAdmin(admin.ModelAdmin):
     )
     list_filter = ['status',]
     search_fields = ['title', 'description']
+    inlines = [ProductImageInline]
 
     ordering = ("-id",)
 
