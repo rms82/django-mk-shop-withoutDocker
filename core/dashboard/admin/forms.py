@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
+from ckeditor.widgets import CKEditorWidget
+
 from shop.models import Product
 from order.models import Coupon
 from pages.models import ContactTicket
@@ -9,6 +11,8 @@ USER = get_user_model()
 
 
 class ProductForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditorWidget())
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -16,7 +20,7 @@ class ProductForm(forms.ModelForm):
         self.fields["status"].widget.attrs["class"] = "form-select"
 
         self.fields["image"].widget.attrs["class"] = "form-control"
-        self.fields["description"].widget.attrs["class"] = "form-control"
+        # self.fields["description"].widget.attrs["class"] = "form-control"
         self.fields["slug"].widget.attrs["class"] = "form-control"
         self.fields["title"].widget.attrs["class"] = "form-control"
         self.fields["stock"].widget.attrs["class"] = "form-control"
@@ -80,5 +84,3 @@ class AdminCouponForm(forms.ModelForm):
         self.fields["discount_percent"].widget.attrs["class"] = "form-control"
         self.fields["max_uses"].widget.attrs["class"] = "form-control"
         self.fields["expired"].widget.attrs["class"] = "form-control"
-
-

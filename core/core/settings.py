@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     "dashboard",
     # third party apps
     "debug_toolbar",
+    "ckeditor",
+    # "ckeditor_uploader",
 ]
 
 MIDDLEWARE = [

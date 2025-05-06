@@ -31,6 +31,8 @@ urlpatterns = [
     path("cart/", include("cart.urls")),
     path("dashboard/", include("dashboard.urls")),
     path("order/", include("order.urls")),
+    # third party
+    # path("ckeditor/", include("ckeditor_uploader.urls")),
 ]
 
 

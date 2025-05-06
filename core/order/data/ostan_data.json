@@ -1,0 +1,250 @@
+[
+    {
+        "model": "order.ostan",
+        "pk": 1,
+        "fields": {
+            "name": "آذربایجان شرقی",
+            "amar_code": 3
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 2,
+        "fields": {
+            "name": "آذربایجان غربی",
+            "amar_code": 4
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 3,
+        "fields": {
+            "name": "اردبیل",
+            "amar_code": 24
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 4,
+        "fields": {
+            "name": "اصفهان",
+            "amar_code": 10
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 5,
+        "fields": {
+            "name": "البرز",
+            "amar_code": 30
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 6,
+        "fields": {
+            "name": "ایلام",
+            "amar_code": 16
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 7,
+        "fields": {
+            "name": "بوشهر",
+            "amar_code": 18
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 8,
+        "fields": {
+            "name": "تهران",
+            "amar_code": 23
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 9,
+        "fields": {
+            "name": "چهارمحال وبختیاری",
+            "amar_code": 14
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 10,
+        "fields": {
+            "name": "خراسان جنوبی",
+            "amar_code": 29
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 11,
+        "fields": {
+            "name": "خراسان رضوی",
+            "amar_code": 9
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 12,
+        "fields": {
+            "name": "خراسان شمالی",
+            "amar_code": 28
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 13,
+        "fields": {
+            "name": "خوزستان",
+            "amar_code": 6
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 14,
+        "fields": {
+            "name": "زنجان",
+            "amar_code": 19
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 15,
+        "fields": {
+            "name": "سمنان",
+            "amar_code": 20
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 16,
+        "fields": {
+            "name": "سیستان وبلوچستان",
+            "amar_code": 11
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 17,
+        "fields": {
+            "name": "فارس",
+            "amar_code": 7
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 18,
+        "fields": {
+            "name": "قزوین",
+            "amar_code": 26
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 19,
+        "fields": {
+            "name": "قم",
+            "amar_code": 25
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 20,
+        "fields": {
+            "name": "کردستان",
+            "amar_code": 12
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 21,
+        "fields": {
+            "name": "کرمان",
+            "amar_code": 8
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 22,
+        "fields": {
+            "name": "کرمانشاه",
+            "amar_code": 5
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 23,
+        "fields": {
+            "name": "کهگیلویه وبویراحمد",
+            "amar_code": 17
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 24,
+        "fields": {
+            "name": "گلستان",
+            "amar_code": 27
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 25,
+        "fields": {
+            "name": "گیلان",
+            "amar_code": 1
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 26,
+        "fields": {
+            "name": "لرستان",
+            "amar_code": 15
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 27,
+        "fields": {
+            "name": "مازندران",
+            "amar_code": 2
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 28,
+        "fields": {
+            "name": "مرکزی",
+            "amar_code": 0
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 29,
+        "fields": {
+            "name": "هرمزگان",
+            "amar_code": 22
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 30,
+        "fields": {
+            "name": "همدان",
+            "amar_code": 13
+        }
+    },
+    {
+        "model": "order.ostan",
+        "pk": 31,
+        "fields": {
+            "name": "یزد",
+            "amar_code": 21
+        }
+    }
+]

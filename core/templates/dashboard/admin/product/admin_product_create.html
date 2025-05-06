@@ -105,6 +105,7 @@
                 <label for="validationValidSelect1">توضیحات</label>
                 <div class="quill-custom">
                   {{form.description}}
+                  
                   {% if form.description.errors %}
                     {% for error in form.description.errors %}
                         <div class="alert alert-danger text-center mt-2">
@@ -158,6 +159,8 @@
       }, 6000);
   });
 </script>
+<script src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
 {% endblock extra_js %}
 

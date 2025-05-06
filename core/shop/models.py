@@ -4,6 +4,8 @@ from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+from ckeditor.fields import RichTextField
+
 User = get_user_model()
 
 
@@ -41,7 +43,7 @@ class Product(TitleSlugDateModel):
     image = models.ImageField(
         upload_to="products/images/", default="products/default.jpg"
     )
-    description = models.TextField()
+    description = RichTextField()
     stock = models.PositiveIntegerField(default=0)
     status = models.IntegerField(
         choices=ProductStatus.choices, default=ProductStatus.draft.value
