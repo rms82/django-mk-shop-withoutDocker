@@ -65,8 +65,13 @@
 
                     <div class="col-sm">
 
-                      <a class="dropdown-item " href="/checkout.html">بررسی</a>
-                      <a class="dropdown-item " href="/order-completed.html">سفارش تکمیل شد</a>
+                      <a class="dropdown-item " href="{% url "pages:about_us" %}">درباره ما</a>
+                      {% if not request.user.is_authenticated %}
+                      <a class="dropdown-item " href="{% url "accounts:register" %}">ثبت نام</a>
+                      {% else %}
+                      <a class="dropdown-item " href="{% url "dashboard:redirect_dashboard" %}">پروفایل </a>
+
+                      {% endif %}
                     </div>
                     <!-- End Col -->
                   </div>
@@ -84,7 +89,7 @@
                     <div class="flex-grow-1 p-4">
                       <span class="h4 d-block text-primary">برنده تی شرت</span>
                       <p>یکی از تی شرت های برند Front ما را برنده شوید.</p>
-                      <a class="btn btn-sm btn-soft-primary btn-transition" href="/index.html">بیشتر بدانید <i
+                      <a class="btn btn-sm btn-soft-primary btn-transition" href="{% url "pages:home" %}">بیشتر بدانید <i
                           class="bi-chevron-left small"></i></a>
                     </div>
                   </div>

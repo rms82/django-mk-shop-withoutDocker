@@ -32,14 +32,14 @@
 
        <div class="mb-7">
          <!-- Form -->
-         <form>
+         <form method='GET' action='{% url "shop:product_list" %}'>
            <!-- Input Card -->
            <div class="input-card">
              <div class="input-card-form">
-               <input type="text" class="form-control form-control-lg" placeholder="جستجو محصولات"
+              <input type="text" name="product-name" class="form-control form-control-lg" placeholder="جستجو محصولات"
                  aria-label="جستجو محصولات">
              </div>
-             <button type="button" class="btn btn-primary btn-lg">جستجو کردن</button>
+             <button type="submit" class="btn btn-primary btn-lg">جستجو کردن</button>
            </div>
            <!-- End Input Card -->
          </form>

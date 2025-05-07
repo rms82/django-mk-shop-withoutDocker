@@ -5,7 +5,7 @@
         <div class="col-lg-3 mb-5">
           <div class="d-flex align-items-start flex-column h-100">
             <!-- Logo -->
-            <a class="w-100 mb-3 mb-lg-auto" href="/index.html" aria-label="Front">
+            <a class="w-100 mb-3 mb-lg-auto" href="{% url "pages:home" %}" aria-label="Front">
               <img class="brand" src="{% static 'svg/logos/logo.svg' %}" alt="Logo">
             </a>
             <!-- End Logo -->
@@ -124,21 +124,7 @@
           <!-- End Socials -->
         </div>
 
-        <div class="col-sm-auto">
-          <!-- List -->
-          <ul class="list-inline list-separator">
-            <li class="list-inline-item">
-              <a class="link-sm link-secondary" href="/page-privacy.html">حریم خصوصی و خط مشی</a>
-            </li>
-            <li class="list-inline-item">
-              <a class="link-sm link-secondary" href="/page-terms.html">مقررات و شرایط</a>
-            </li>
-            <li class="list-inline-item">
-              <a class="link-sm link-secondary" href="/#">مشاغل</a>
-            </li>
-          </ul>
-          <!-- End List -->
-        </div>
+        
       </div>
     </div>
   </footer>

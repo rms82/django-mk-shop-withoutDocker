@@ -30,7 +30,11 @@ class CustomerOrdersView(
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = Order.objects.filter(user=self.request.user)
+        queryset = (
+            Order.objects.filter(user=self.request.user)
+            .prefetch_related("items")
+            .select_related("coupon")
+        )
 
         queryset = order_query.query_orders_status(self.request, queryset)
         queryset = order_query.query_orders_order_by(self.request, queryset)

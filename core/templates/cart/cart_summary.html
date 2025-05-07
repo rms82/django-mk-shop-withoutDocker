@@ -101,7 +101,7 @@ cart summary
                   <p>قبل از شروع تسویه حساب، باید محصولاتی را به سبد خرید خود اضافه کنید. در صفحه "فروشگاه" ما محصولات جالب زیادی پیدا خواهید کرد.</p>
                 </div>
 
-                <a class="btn btn-primary btn-transition rounded-pill px-6" href="/index.html">شروع به خرید کنید</a>
+                <a class="btn btn-primary btn-transition rounded-pill px-6" href="{% url "shop:product_list" %}">شروع به خرید کنید</a>
               </div>
               {% endfor %}
             </ul> 
@@ -110,7 +110,7 @@ cart summary
             <!-- End List Group -->
 
             <div class="d-sm-flex justify-content-end">
-              <a class="link" href="/products-grid.html">
+              <a class="link" href="{% url "shop:product_list" %}">
                 به خرید ادامه دهید <i class="bi-chevron-left small ms-1"></i>
               </a>
             </div>
@@ -170,7 +170,7 @@ cart summary
               </div>
               <div class="flex-grow-1 ms-2">
                 <span class="small me-1">نیاز به پشتیبانی دارید؟</span>
-                <a class="link small" href="#">ارسال تیکت</a>
+                <a class="link small" href="{% url "pages:contact_us" %}">ارسال تیکت</a>
               </div>
             </div>
             <!-- End Media -->
