@@ -1,0 +1,209 @@
+{% extends "dashboard/customer/base.html" %}
+{% load static %}
+{% load number_filters %}
+
+{% block extra_css %}
+<style>
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .table th, .table td {
+    text-align: center;
+  }
+  .table .btn {
+    margin: 0 2px;
+  }
+</style>
+
+{% endblock extra_css %}
+
+{% block customer_dashboard_body %}
+<div class="col-lg-9">
+    <!-- Card -->
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="">لیست سفارشات</h5>
+
+        </div>
+      </div>
+      <!-- End Header -->
+
+      <!-- Body -->
+      <div class="card-body">
+        <div class="container pb-5">
+          <form class="row" action='.'>
+            
+
+            <!-- Input Card -->
+            <!-- End Input Card -->
+            <div class="col-md-6 py-1">
+              <select class="form-select" id='select-order-by' name='order-by'>
+                <option value="" selected>مرتب سازی بر اساس </option>
+                <option value="-created_date">جدیدترین</option>
+                <option value="created_date">قدیمی ترین</option>
+                <option value="total_amount">کمترین قیمت</option>
+                <option value="-total_amount">بیشترین قیمت</option>
+              </select>
+            </div>
+            <div class="col-md-6 py-1">
+              <select class="form-select" name="coupon" id="couponSelect">
+                <option value="" selected>وضعیت کد تخفیف</option>
+                <option value="1">دارای کد تخفیف</option>
+                <option value="0">بدون کد تخفیف</option>
+
+              </select>
+            </div>
+
+            <!-- New Filter for Published Status -->
+            <div class="col-md-6 py-1">
+              <select class="form-select" name="status" id="orderStatusSelect">
+                <option value="" selected>وضعیت سفارش</option>
+                <option value="1">در انتظار پرداخت</option>
+                <option value="2">در حال پردازش</option>
+                <option value="3">اماده ارسال</option>
+                <option value="4">لغو شده</option>
+                <option value="5">تحویل داده شده</option>
+                
+              </select>
+            </div>
+            <!-- End New Filter -->
+            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center p-3 mx-auto">
+              <button type="submit" class="btn btn-primary mx-2">
+                <i class="bi bi-search"></i>
+              </button>
+              <a class="btn btn-secondary" href="{% url 'dashboard:customer:orders' %}">
+
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="row">
+          <!-- Table -->
+          <div class="container-fluid">
+            <!-- Wrap the table with table-responsive -->
+            <span>
+              تعداد سفارشات:  {{ page_obj.paginator.count }}
+            </span>
+            <form method="post">
+              {% csrf_token %}
+              {% comment %} products {% endcomment %}
+              <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                      <thead class="thead-light">
+                          <tr>
+                             <!-- Select all checkbox -->
+                              <th scope="col">ID</th>
+                              <th scope="col">وضعیت سفارش</th>
+                              <th scope="col">کد تخفیف</th>
+                              <th scope="col">قیمت کل</th>
+                              <th scope="col">تعداد کالا ها</th>
+                              <th scope="col">عملیات</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for order in orders %}
+                          <tr class="text-center">
+
+                              <td scope="row" class=>{{ order.id }}</td>
+                              <td class="status-{{order.status}}"><span class="mt-2">{{order.get_status_display}}</span></td>
+                              <td>
+                                {% if order.coupon %}
+                                <span class="mt-4">{{order.coupon}}</span>
+                                {% else %}
+                                <span class="text-center">بدون کد تخفیف</span>
+                                {% endif %}
+                              </td>
+                              <td>{{ order.total_amount|format_persian_price }}</td>
+                              <td>{{ order.total_items_count }}</td>
+                              
+                              
+                              <td class="d-flex flex-column">
+
+                                <a class="btn btn-sm btn-primary mt-2" href="" title="مشاهده"><i class="bi bi-eye"></i></a>
+                              </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+              {% comment %} actions  {% endcomment %}
+              
+            </form>
+          </div>
+    
+         
+
+          
+          {% include "includes/pagination.html" %}
+
+
+
+        </div>
+        <!-- End Row -->
+
+      </div>
+      <!-- End Body -->
+    </div>
+    <!-- End Card -->
+  </div>
+  <!-- End Col -->
+{% endblock customer_dashboard_body %}
+
+{% block extra_js %}
+<script>
+  $("#customerOrders").addClass('active');
+
+
+  //status display
+  $("td.status-1 span").addClass("badge bg-info");
+  $("td.status-2 span").addClass("badge bg-warning");
+  $("td.status-3 span").addClass("badge bg-primary");
+  $("td.status-5 span").addClass("badge bg-success");
+  $("td.status-4 span").addClass("badge bg-danger");
+
+  $(document).ready(function() {
+      setTimeout(function() {
+          $('.alert.alert-danger').fadeOut();
+      }, 3000);
+  });
+</script>
+
+<script>
+  function getPage(page_number){
+    let searchParams = new URLSearchParams(window.location.search)
+    searchParams.set('page', page_number)
+
+    window.location.href =  window.location.pathname + "?" + searchParams.toString()
+
+  }
+
+  $(document).ready(function(){
+    let searchParams = new URLSearchParams(window.location.search)
+
+    $('#select-order-by').val(searchParams.get("order-by") || "")
+    $('#orderStatusSelect').val(searchParams.get("status") || "")
+    $('#couponSelect').val(searchParams.get("coupon") || "")
+
+
+  });
+</script>
+
+
+{% endblock extra_js %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">
+  داشبورد مشتری
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+  سفارشات
+</li>
+{% endblock breadcrumb %}

@@ -13,7 +13,8 @@
           <h4 class="mb-3">روش پرداخت</h4>
 
           <!-- Form -->
-          <form class="needs-validation">
+          <form class="needs-validation" name="order_form", id="order_form" method="POST">
+            {% csrf_token %}
             <hr class="my-4">
             <div class="d-grid gap-2">
 

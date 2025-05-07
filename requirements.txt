@@ -8,3 +8,4 @@ django-iranian-cities
 gunicorn
 mysqlclient
 django-ckeditor==6.7.2
+requests

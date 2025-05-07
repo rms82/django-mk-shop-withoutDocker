@@ -62,11 +62,11 @@ class Coupon(models.Model):
 
 
 class OrderStatus(models.IntegerChoices):
-    pending = 1, "Pending"
-    processing = 2, "Processing"
-    completed = 3, "Completed"
-    cancelled = 4, "Cancelled"
-    delivered = 5, "Delivered"
+    pending = 1, "در انتظار پرداخت"
+    processing = 2, "در حال پردازش"
+    completed = 3, "اماده ارسال"
+    cancelled = 4, "لغو شده"
+    delivered = 5, "تحویل داده شده"
 
 
 class UserAddress(models.Model):
@@ -117,6 +117,12 @@ class Order(models.Model):
         order_items = self.items.all()
 
         return sum(item.quantity * item.price for item in order_items)
+
+    def total_items_count(self):
+        order_items = self.items.all()
+        return sum(item.quantity for item in order_items)
+
+    
 
 
 class OrderItem(models.Model):
