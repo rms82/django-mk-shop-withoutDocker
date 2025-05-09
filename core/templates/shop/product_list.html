@@ -2,10 +2,19 @@
 {% load static %}
 {% load number_filters %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+{% endblock extra_css %}
+
 
 {% block body %}
   <!-- ========== MAIN CONTENT ========== -->
   <main id="content" role="main">
+    {% comment %} wishlist message {% endcomment %}
+    <div id='wishlist-result-message'>
+    </div>
+    {% comment %} wishlist message {% endcomment %}
+
     <!-- Breadcrumb -->
     <div class="bg-light">
       <div class="container py-4">
@@ -14,7 +23,6 @@
             <h4 class="mb-0">شبکه محصولات</h4>
           </div>
           <!-- End Col -->
-
           <div class="col-sm-auto">
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb">
@@ -200,8 +208,12 @@
                     </div>
                     {% if request.user.is_authenticated %}
                     <div class="card-pinned-top-end">
-                      <button type="button" class="btn btn-outline-secondary btn-xs btn-icon rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علایق">
-                        <i class="bi-heart"></i>
+                      <button type="button" onClick="productWishlist(this)" class="btn btn-outline-secondary btn-xs btn-icon rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="علاقه مندی" id='productWishlist' product-id="{{ product.id }}">
+                        {% if product.id in wishlist_ids %}
+                          <i class="bi bi-heart-fill"></i>
+                        {% else %}
+                          <i class="bi bi-heart"></i>  
+                        {% endif %}
                       </button>
                     </div>
                     {% endif %}
@@ -403,6 +415,42 @@
 </script>
 
 
+<script>
+  function productWishlist(btn){
+    var button = $(btn);
+    var product_id = button.attr('product-id');
+    var message = ''
+    $.ajax({
+      type: "POST",
+      url: "{% url 'shop:wishlist' %}",
+      data: {
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        product_id: product_id,
+      },
+      success: function(resultData){
+        if (resultData.success){
+          button.find('i').removeClass('bi bi-heart')
+              .addClass('bi bi-heart-fill');
+          message = "محصول با موفقیت به لیست علاقه مندی اضافه شد";
+        }
+        else {
+          button.find('i').removeClass('bi bi-heart-fill')
+              .addClass('bi bi-heart');
+          message = "محصول  از لیست علاقه مندی ها حذف شد";
+        }
+
+
+        $('#wishlist-result-message').text(message).fadeIn();
+        // Hide the message after 3 seconds
+        setTimeout(function () {
+          $('#wishlist-result-message').fadeOut();
+        }, 3000);
+      }
+    });
+
+    
+  }
+</script>
 
 
 {% endblock extra_js %}

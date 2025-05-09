@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Q
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, View
 from django.core.exceptions import FieldError
-from shop.models import Product, ProductCategory, ProductStatus
+from shop.models import Product, ProductCategory, ProductStatus, Wishlist
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http.response import JsonResponse
 
 
 # Create your views here.
@@ -60,8 +62,13 @@ class ProductListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # context["product_count"] = self.get_queryset().count()
         context["categories"] = ProductCategory.objects.all()
+
+        if self.request.user.is_authenticated:
+            user_wishlist = Wishlist.objects.filter(user=self.request.user).values_list('product_id', flat=True)
+            context['wishlist_ids'] = list(user_wishlist)
+        else:
+            context['wishlist_ids'] = []
 
         return context
 
@@ -72,3 +79,26 @@ class ProductDetailView(DetailView):
 
     def get_queryset(self):
         return Product.objects.filter(status=ProductStatus.published.value)
+
+
+class ProductWishlistView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        product_id = request.POST.get("product_id", None)
+        msg = "اطلاعات صحیح نمیباشد"
+        success = False
+
+        if product_id:
+            product = get_object_or_404(Product, id=product_id)
+            wishlist_item, created = Wishlist.objects.get_or_create(
+                user=request.user, product=product
+            )
+
+            if not created:
+                wishlist_item.delete()
+                msg = "از علاقه‌مندی‌ها حذف شد."
+                success = False
+            else:
+                msg = "به علاقه‌مندی‌ها اضافه شد."
+                success = True
+
+        return JsonResponse({"message": msg, "success": success})

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 
-from shop.models import ProductCategory, Product, ProductStatus, ProductImage
+from shop.models import ProductCategory, Product, ProductStatus, ProductImage, Wishlist
 
 
 # Register your models here.
@@ -12,6 +12,16 @@ class ProductCategoryAdmin(admin.ModelAdmin):
         "title",
         "slug",
         'id',
+    )
+    ordering = ("-id",)
+
+
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        "user",
+        "product",
     )
 
     ordering = ("-id",)

@@ -85,12 +85,14 @@ class Product(TitleSlugDateModel):
         return reverse("dashboard:admin:product_update", kwargs={"pk": self.pk})
 
 
-
 def product_image_upload_to(instance, filename):
-    return f'products/images/{instance.product.slug}/{filename}'
+    return f"products/images/{instance.product.slug}/{filename}"
+
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, related_name="images", on_delete=models.CASCADE
+    )
     image = models.ImageField(upload_to=product_image_upload_to)
     alt_text = models.CharField(max_length=255, blank=True, null=True)
 
@@ -98,5 +100,22 @@ class ProductImage(models.Model):
         return f"Image for {self.product.title}"
 
     class Meta:
-        verbose_name = 'Product Image'
-        verbose_name_plural = 'Product Images'
+        verbose_name = "Product Image"
+        verbose_name_plural = "Product Images"
+
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="wishlist"
+    )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (
+            "user",
+            "product",
+        )
+
+    def __str__(self):
+        return f"{self.user.email} - {self.product.title}"
