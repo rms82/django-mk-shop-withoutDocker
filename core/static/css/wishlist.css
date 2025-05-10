@@ -1,0 +1,15 @@
+#wishlist-result-message{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #377DFF;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    display: none;  /* Initially hidden */
+    z-index: 9999;
+}
+
+.bi-heart-fill{
+    color: red;
+}
