@@ -1,0 +1,232 @@
+{% extends "dashboard/customer/base.html" %}
+{% load static %}
+{% load number_filters %}
+
+{% block extra_css %}
+<style>
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .table th, .table td {
+    text-align: center;
+  }
+  .table .btn {
+    margin: 0 2px;
+  }
+
+  .product-image {
+    height: 100%;
+    max-height: 60px; 
+    width: auto;
+    object-fit: contain;
+    vertical-align: middle;
+  }
+</style>
+
+<link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+
+{% endblock extra_css %}
+
+{% block customer_dashboard_body %}
+
+<div id="wishlist-result-message" style="width:300px;">
+</div>
+
+<div class="col-lg-9">
+    <!-- Card -->
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="">لیست علاقه مندی ها</h5>
+
+        </div>
+      </div>
+      <!-- End Header -->
+
+      <!-- Body -->
+      <div class="card-body">
+        <div class="container pb-5">
+          <form class="row" action='.'>
+            
+
+            <!-- Input Card -->
+            <!-- End Input Card -->
+             <div class="col-md-6 py-1">
+              <input class='form-control' type="text" value="" id="productname" name='product-name'
+                    placeholder="جستجوی محصول...">
+
+            </div>
+            <div class="col-md-6 py-1">
+              <select class="form-select" id='select-order-by' name='order-by'>
+                <option value="" selected>مرتب سازی بر اساس </option>
+                <option value="-created_date">جدیدترین</option>
+                <option value="created_date">قدیمی ترین</option>
+                <option value="price">کمترین قیمت</option>
+                <option value="-price">بیشترین قیمت</option>
+              </select>
+            </div>
+     
+            
+            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center p-3 mx-auto">
+              <button type="submit" class="btn btn-primary mx-2">
+                <i class="bi bi-search"></i>
+              </button>
+              <a class="btn btn-secondary" href="{% url 'dashboard:customer:wishlist' %}">
+
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="row">
+          <!-- Table -->
+          <div class="container-fluid">
+            <!-- Wrap the table with table-responsive -->
+            <span>
+              تعداد محصولات:  {{ page_obj.paginator.count }}
+            </span>
+            <form method="post">
+              {% csrf_token %}
+              {% comment %} products {% endcomment %}
+              <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                      <thead class="thead-light">
+                          <tr>
+                             <!-- Select all checkbox -->
+                              <th scope="col">ID</th>
+                              <th scope="col">نام محصول</th>
+                              <th scope="col">عکس محصول</th>
+                              <th scope="col">عملیات</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for product in products %}
+                          <tr class="text-center">
+                              <td>{{ product.id }}</td>
+                              <td>{{ product.title }}
+
+                              </td>
+                              <td>
+                                  <img src={{product.image.url}}  class="product-image" >
+                              </td>
+
+                              <td class="d-flex flex-column">
+                                  {% if product.is_published %}
+                                  <a class="btn btn-sm btn-outline-primary mt-2" href="{% url 'shop:product_detail' product.slug %}" title="مشاهده"><i class="bi bi-eye"></i></a>
+                                  {% endif %}
+                                  <a class="btn btn-sm btn-danger mt-2" onClick="productWishlist(this)" title="حذف از لیست علاقه مندی ها" product-id={{product.id}}><i class="bi bi-trash"></i></a>
+                              </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+              {% comment %} actions  {% endcomment %}
+              
+            </form>
+          </div>
+
+          {% include "includes/pagination.html" %}
+
+
+        </div>
+        <!-- End Row -->
+
+      </div>
+      <!-- End Body -->
+    </div>
+    <!-- End Card -->
+  </div>
+  <!-- End Col -->
+{% endblock customer_dashboard_body %}
+
+{% block extra_js %}
+<script>
+  $("#customerWishlist").addClass('active');
+
+
+  $(document).ready(function() {
+      setTimeout(function() {
+          $('.alert.alert-danger').fadeOut();
+      }, 3000);
+  });
+</script>
+
+<script>
+  function getPage(page_number){
+    let searchParams = new URLSearchParams(window.location.search)
+    searchParams.set('page', page_number)
+
+    window.location.href =  window.location.pathname + "?" + searchParams.toString()
+
+  }
+
+  $(document).ready(function(){
+    let searchParams = new URLSearchParams(window.location.search)
+
+    $('#select-order-by').val(searchParams.get("order-by") || "")
+    $('#orderStatusSelect').val(searchParams.get("status") || "")
+    $('#couponSelect').val(searchParams.get("coupon") || "")
+
+
+
+    //wishlist message
+    var message = sessionStorage.getItem('wishlistMessage');
+    if (message) {
+      $('#wishlist-result-message').text(message).fadeIn();
+      setTimeout(function () {
+        $('#wishlist-result-message').fadeOut();
+      }, 3000);
+      sessionStorage.removeItem('wishlistMessage');
+    }
+
+
+  });
+</script>
+
+
+{% comment %} wishlist {% endcomment %}
+<script>
+  function productWishlist(btn){
+    var button = $(btn);
+    var product_id = button.attr('product-id');
+    var message = ''
+    $.ajax({
+      type: "POST",
+      url: "{% url 'shop:wishlist' %}",
+      data: {
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        product_id: product_id,
+      },
+      success: function(resultData){
+        if (resultData.success){
+          message = "محصول با موفقیت به لیست علاقه مندی اضافه شد";
+        }
+        else {
+          message = "محصول  از لیست علاقه مندی ها حذف شد";
+        }
+
+        sessionStorage.setItem('wishlistMessage', message);
+        location.reload()
+      }
+    });
+  }
+</script>
+
+
+{% endblock extra_js %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">
+  داشبورد مشتری
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+  لیست علاقه مندی
+</li>
+{% endblock breadcrumb %}

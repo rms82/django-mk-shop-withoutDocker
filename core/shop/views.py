@@ -65,10 +65,12 @@ class ProductListView(ListView):
         context["categories"] = ProductCategory.objects.all()
 
         if self.request.user.is_authenticated:
-            user_wishlist = Wishlist.objects.filter(user=self.request.user).values_list('product_id', flat=True)
-            context['wishlist_ids'] = list(user_wishlist)
+            user_wishlist = Wishlist.objects.filter(user=self.request.user).values_list(
+                "product_id", flat=True
+            )
+            context["wishlist_ids"] = list(user_wishlist)
         else:
-            context['wishlist_ids'] = []
+            context["wishlist_ids"] = []
 
         return context
 
@@ -78,7 +80,20 @@ class ProductDetailView(DetailView):
     context_object_name = "product"
 
     def get_queryset(self):
-        return Product.objects.filter(status=ProductStatus.published.value)
+        return Product.objects.filter(
+            status=ProductStatus.published.value
+        ).prefetch_related("images")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.user.is_authenticated:
+            context["is_wishlist"] = Wishlist.objects.filter(
+                user=self.request.user,
+                product=self.object
+            ).exists()
+
+        return context
 
 
 class ProductWishlistView(LoginRequiredMixin, View):

@@ -1,4 +1,6 @@
 from django.core.exceptions import FieldError, ValidationError
+from django.db.models import Q
+
 
 from shop.models import ProductStatus
 

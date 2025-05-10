@@ -20,5 +20,10 @@ urlpatterns = [
     path("orders/", views.CustomerOrdersView.as_view(), name="orders"),
 
 
+    # wishlist
+    path("wishlist/", views.WishlistOrdersView.as_view(), name="wishlist"),
+
+
+
 ]
 
