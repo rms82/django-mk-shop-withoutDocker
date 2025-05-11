@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView as AuthPasswordChangeView
+from django.contrib.auth import get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -7,10 +8,17 @@ from django.views.generic import (
     UpdateView,
     View,
 )
+from django.db.models import Q, Count
 
 from dashboard.permissions import AdminDashboardPermissionMixin
 from dashboard.forms import ProfileUpdateForm
-from accounts.models import Profile
+from accounts.models import Profile, UserType
+from shop.models import Product, ProductStatus
+from order.models import Order, OrderStatus
+from pages.models import ContactTicket
+
+
+USER = get_user_model()
 
 
 class AdminDashbordView(
@@ -19,6 +27,31 @@ class AdminDashbordView(
     TemplateView,
 ):
     template_name = "dashboard/admin/dashboard_admin_home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["last_product"] = Product.objects.last()
+
+        product_counts = Product.objects.aggregate(
+            published_count=Count("id", filter=Q(status=ProductStatus.published.value))
+        )
+        order_counts = Order.objects.aggregate(
+            processing_count=Count("id", filter=Q(status=OrderStatus.processing.value))
+        )
+        user_counts = USER.objects.aggregate(
+            customer_count=Count("id", filter=Q(user_type=UserType.customer.value))
+        )
+        ticket_counts = ContactTicket.objects.aggregate(
+            unresolved_count=Count("id", filter=Q(is_resolved=False))
+        )
+
+        context["published_products"] = product_counts["published_count"]
+        context["processing_orders"] = order_counts["processing_count"]
+        context["registered_users"] = user_counts["customer_count"]
+        context["unresolved_tickets"] = ticket_counts["unresolved_count"]
+
+        return context
 
 
 class AdminSecurityView(
@@ -45,4 +78,3 @@ class AdminChangeDashbordView(
 
     def get_object(self, queryset=None):
         return Profile.objects.get(user=self.request.user)
-

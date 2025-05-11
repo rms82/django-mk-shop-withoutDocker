@@ -91,9 +91,14 @@
         
               <h3><i class="fas fa-clock me-2 text-secondary"></i><span class="mx-2"> آخرین سفارش</span></h3>
               {% if last_order %}
-                <p><strong>شماره سفارش:</strong> {{ last_order.id }}</p>
-                <p><strong>تاریخ:</strong> {{ last_order.created_date |date:"Y/m/d" }}</p>
-                <p><strong>وضعیت:</strong> <span class="badge bg-secondary">{{ last_order.get_status_display }}</span></p>
+              <div class='d-flex justify-content-between mt-3'>
+                <div>
+                  <p><strong>شماره سفارش:</strong> {{ last_order.id }}</p>
+                  <p><strong>تاریخ:</strong> {{ last_order.created_date |date:"Y/m/d" }}</p>
+                  <p><strong>وضعیت:</strong> <span class="badge bg-secondary">{{ last_order.get_status_display }}</span></p>
+                </div>
+                <p><strong>مشاهده جزییات:</strong><a class='btn btn-outline-danger mx-2'><i class='bi bi-eye'></i></a>
+              </div>
               {% else %}
                 <p class="text-muted">شما هنوز سفارشی ثبت نکرده‌اید.</p>
               {% endif %}

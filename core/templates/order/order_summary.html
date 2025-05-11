@@ -97,7 +97,8 @@
 
                   <div class="border-bottom pb-4 mb-3 text-center">
                     <input type="text" id="coupon-input" class="form-control text-center" name="coupon" id="coupon" form='order_form' placeholder="کد تخفیف" aria-label="کد تخفیف">
-                    <button id="check-coupon" class="btn btn-outline-info btn-sm mt-2" onclick='couponValidation()'>بررسی کد</button>
+                    <p class="mt-2 text-danger" id='coupon-success'></p>
+                    <button id="check-coupon" class="btn btn-outline-info btn-sm" onclick='couponValidation()'>بررسی کد</button>
                 
                     {% if form.coupon.errors %}
                     {% for error in form.coupon.errors %}
@@ -130,7 +131,8 @@
 
                     <dl class="row">
                       <dt class="col-sm-5">جمع کل</dt>
-                      <dd class="col-sm-6 text-sm-end mb-0">{{order_total_price|format_persian_price}}تومان </dd>
+                      <dd class="col-sm-6 text-sm-end mb-0" id='old-price'>{{order_total_price|format_persian_price}}تومان </dd>
+                      <dd id="new-price" class="col-sm-6 text-sm-end mb-0" style="display: none;"> </dd>
                     </dl>
                     <!-- End Row -->
                   </div>
@@ -186,6 +188,8 @@
 
 
   $(document).ready(function() {
+    
+
       setTimeout(function() {
           $('.alert.alert-danger').fadeOut();
       }, 3000);
@@ -201,22 +205,37 @@
 <!--  coupon_validation function  -->
 <script>
   function couponValidation(){
+    var coupon_input = $('#coupon-input').val();
     $.ajax({
       url: '{% url "order:coupon_validation" %}',
       method: 'POST',
       dataType: 'json',
       data: {
         csrfmiddlewaretoken: '{{ csrf_token }}',
-        coupon: $('#coupon-input').val()
+        coupon: coupon_input
       },
       success: function(response) {
-        console.log(response);
+        if (response.success){
+          $('#coupon-input').val(coupon_input);
+          $('#coupon-input').prop('readonly', true);
+          $('#check-coupon').prop('disabled', true); 
+          $('#coupon-success').text('کد تخفیف با موفقیت اعمال شد'); 
 
+
+          $('#old-price').css('text-decoration', 'line-through');
+          $('#old-price').addClass('text-danger');
+
+          // نمایش قیمت جدید
+          $('#new-price').show();
+          $('#new-price').text(`${response.order_total_price} تومان`);
+
+        }
         $('#coupon-result-message').text(response.message).fadeIn();
-        // Hide the message after 3 seconds
+          // Hide the message after 3 seconds
         setTimeout(function () {
           $('#coupon-result-message').fadeOut();
         }, 3000);
+
 
       },
       error: function(xhr, status, error) {

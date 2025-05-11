@@ -40,4 +40,4 @@ class CustomerOrdersView(
         queryset = order_query.query_orders_order_by(self.request, queryset)
         queryset = order_query.query_orders_coupon(self.request, queryset)
 
-        return queryset
+        return queryset.order_by('-id')

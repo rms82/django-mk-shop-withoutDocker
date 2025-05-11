@@ -81,8 +81,17 @@
                   <!-- End Avatar -->
 
                   <!-- Nav -->
-                  <span class="text-cap">حساب</span>
+                  <span class="text-cap">ادمین</span>
+                  <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
+                    <li class="nav-item">
+                        <a class="nav-link " href="/admin">
+                          <i class="bi-people-fill nav-icon"></i> ادمین جنگو
+                        </a>
 
+                    </li>
+                  </ul>
+
+                  <span class="text-cap">حساب</span>
                   <!-- List -->
                   <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
                     <li class="nav-item">
@@ -119,11 +128,7 @@
                       </span>
 
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link " href="./admin-account-order.html">
-                        <i class="bi-receipt-cutoff nav-icon"></i> سفارشات
-                      </a>
-                    </li>
+                    
                     <li class="nav-item">
                       <a class="nav-link " href="{% url 'dashboard:admin:coupons' %}" id='adminCoupon'>
                         <i class="bi-tag nav-icon"></i> کد های تخفیف
@@ -141,11 +146,6 @@
                     <li class="nav-item">
                       <a class="nav-link" id='adminUsers' href="{% url 'dashboard:admin:users' %}">
                         <i class="bi-person nav-icon"></i> لیست کاربران
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link " href="./admin-account-newsletter.html">
-                        <i class="bi-newspaper nav-icon"></i> خبرنامه
                       </a>
                     </li>
                     <li class="nav-item">
