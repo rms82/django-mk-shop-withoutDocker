@@ -1,0 +1,11 @@
+#cart-result-message{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #e40b0b;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    display: none;  /* Initially hidden */
+    z-index: 9999;
+}

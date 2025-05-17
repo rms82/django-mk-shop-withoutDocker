@@ -71,10 +71,18 @@ class Cart:
         items = self.cart["items"].copy()
         self.cart_total_price = 0
 
+        product_ids = [item["product_id"] for item in items]
+        products = Product.objects.filter(
+            id__in=product_ids, status=ProductStatus.published.value
+        ).prefetch_related('category')
+
+        product_map = {str(p.id): p for p in products}
+
         for item in items:
-            product = Product.objects.get(
-                id=item["product_id"], status=ProductStatus.published.value
-            )
+            product = product_map.get(str(item["product_id"]))
+            if not product:
+                continue
+
             product_total_price = int(product.get_price() * item["quantity"])
 
             item.update(

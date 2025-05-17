@@ -26,6 +26,7 @@
   <!-- CSS Front Template -->
   <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/cart_message.css' %}">
 
   {% block extra_css %}{% endblock extra_css %}
 </head>
@@ -35,6 +36,13 @@
   {% include "includes/header.html" %}
 
   <!-- ========== END HEADER ========== -->
+
+  {% comment %} add to cart message {% endcomment %}
+  <div id="cart-result-message">
+  </div>
+  {% comment %} add to cart message {% endcomment %}
+
+
 
   
 

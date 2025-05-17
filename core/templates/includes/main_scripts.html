@@ -128,7 +128,12 @@
         product_id: product_id,
       },
       success: function(resultData){
-          $('#cart-item-count').html(resultData.cart_obj.length);
+        $('#cart-result-message').text("با موفقیت به سبد خرید افزوده شد").fadeIn();
+        $('#cart-item-count').html(resultData.cart_obj.length);
+        // Hide the message after 3 seconds
+        setTimeout(function () {
+          $('#cart-result-message').fadeOut();
+          }, 3000);
       }
     });
   }

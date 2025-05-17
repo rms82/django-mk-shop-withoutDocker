@@ -1,0 +1,90 @@
+{% load static %}
+{% load number_filters %}
+<div class="container content-space-2 content-space-lg-3">
+      <!-- Title -->
+      <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+        <h2>آخرین محصولات</h2>
+      </div>
+      <!-- End Title -->
+      {% comment %} latest products {% endcomment %}
+      <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 mb-3">
+        {% for product in latest_products %}
+                <div class="col mb-4">
+                <!-- Card -->
+                <div class="card card-bordered shadow-none text-center h-100">
+                  <div class="card-pinned">
+                    <img class="card-img-top" src="{{ product.image.url }}" alt="Image Description">
+  
+                    <div class="card-pinned-top-start">
+                      <span class="badge bg-success rounded-pill">جدید</span>
+                    </div>
+                    {% if request.user.is_authenticated %}
+                    <div class="card-pinned-top-end">
+                      <button type="button" onClick="productWishlist(this)" class="btn btn-outline-secondary btn-xs btn-icon rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="علاقه مندی" id='productWishlist' product-id="{{ product.id }}">
+                        {% if product.id in wishlist_ids %}
+                          <i class="bi bi-heart-fill"></i>
+                        {% else %}
+                          <i class="bi bi-heart"></i>  
+                        {% endif %}
+                      </button>
+                    </div>
+                    {% endif %}
+
+                  </div>
+  
+                  <div class="card-body">
+                    <div class="mb-2">
+                      {% for category in product.category.all %}
+                        <a class="link-sm link-secondary" href="{% url 'shop:product_list' %}?category={{category.id}}">{{category.title}}</a>
+                        {% if not forloop.last %}, {% endif %}
+                      {%empty%}
+                        <span class="text-secondary" >بدون دسته بندی</span>
+                      {% endfor %}
+                    </div>
+  
+                    <h4 class="card-title">
+                      <a class="text-dark" href="{% url 'shop:product_detail' product.slug %}">{{ product.title }}</a>
+                    </h4>
+                    {% if  not product.is_discounted %}
+                      <p class="card-text text-dark">{{product.show_raw_price|format_persian_price }}تومان</p>
+                    {% else %}
+                      <span class="text-body ms-1"><del>{{product.show_raw_price|format_persian_price}}</del></span>
+                      <p class="text-body ms-1">{{product.discount}}درصد تخفیف</p>
+                      <p class="card-text text-dark">{{product.show_discounted_price|format_persian_price }}تومان</p>
+                    {% endif %}
+                  </div>
+  
+                  <div class="card-footer pt-0">
+                    <!-- Rating -->
+                    <a class="d-inline-flex align-items-center mb-3" href="#">
+                      <div class="d-flex gap-1 ms-2">
+                        <img src="{% static 'svg/illustrations/star-muted.svg' %}" alt="Review rating" width="16">
+                        <img src="{% static 'svg/illustrations/star-muted.svg' %}" alt="Review rating" width="16">
+                        <img src="{% static 'svg/illustrations/star-muted.svg' %}" alt="Review rating" width="16">
+                        <img src="{% static 'svg/illustrations/star-muted.svg' %}" alt="Review rating" width="16">
+                        <img src="{% static 'svg/illustrations/star-muted.svg' %}" alt="Review rating" width="16">
+                      </div>
+                      <span class="small">0</span>
+                    </a>
+                    <!-- End Rating -->
+  
+                    <button type="button" class="btn btn-outline-primary btn-sm btn-transition rounded-pill" onClick="addToCart({{product.id}})">افزودن به سبد خرید</button>
+                  </div>
+                </div>
+                <!-- End Card -->
+              </div>
+              <!-- End Col -->
+            {% empty %}
+            <p>محصولی وجود ندارد</p>
+          {% endfor %}
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+      {% comment %} end latest products {% endcomment %}
+
+
+      <div class="text-center">
+        <a class="btn btn-outline-primary btn-transition rounded-pill" href="{% url "shop:product_list" %}">مشاهده تمامی محصولات</a>
+      </div>
+    </div>
+    <!-- End Card Grid -->
