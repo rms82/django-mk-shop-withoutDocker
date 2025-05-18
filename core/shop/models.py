@@ -81,6 +81,9 @@ class Product(TitleSlugDateModel):
 
     def is_published(self):
         return self.status == ProductStatus.published.value
+    
+    def is_available(self):
+        return self.stock > 0
 
     def get_absolute_url(self):
         return reverse("dashboard:admin:product_update", kwargs={"pk": self.pk})

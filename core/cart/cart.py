@@ -30,22 +30,49 @@ class Cart:
         return len(self) == 0
 
     def add_product(self, product_id, quantity=1):
+        try:
+            product = Product.objects.get(
+                id=product_id, status=ProductStatus.published.value
+            )
+        except Product.DoesNotExist:
+            return
+
+        if product.stock < 1:
+            return
+
+        current_quantity = 0
         for item in self.cart["items"]:
             if item["product_id"] == product_id:
-                item["quantity"] += 1
-
+                current_quantity = item["quantity"]
                 break
-        else:
-            new_item = {
-                "product_id": product_id,
-                "quantity": quantity,
-            }
 
-            self.cart["items"].append(new_item)
+        new_quantity = min(current_quantity + quantity, product.stock)
+
+        if current_quantity > 0:
+            for item in self.cart["items"]:
+                if item["product_id"] == product_id:
+                    item["quantity"] = new_quantity
+                    break
+        else:
+            self.cart["items"].append(
+                {
+                    "product_id": product_id,
+                    "quantity": min(quantity, product.stock),
+                }
+            )
 
         self.save()
 
     def update_product_quantity(self, product_id, quantity):
+        try:
+            product = Product.objects.get(
+                id=product_id, status=ProductStatus.published.value
+            )
+        except Product.DoesNotExist:
+            return
+
+        quantity = min(quantity, product.stock)
+
         for item in self.cart["items"]:
             if item["product_id"] == product_id:
                 item["quantity"] = quantity
@@ -74,7 +101,7 @@ class Cart:
         product_ids = [item["product_id"] for item in items]
         products = Product.objects.filter(
             id__in=product_ids, status=ProductStatus.published.value
-        ).prefetch_related('category')
+        ).prefetch_related("category")
 
         product_map = {str(p.id): p for p in products}
 
@@ -121,7 +148,7 @@ class Cart:
                 }
 
                 self.cart["items"].append(new_item)
-                
+
         self.cart_to_db(user)
         self.save()
 
@@ -132,11 +159,13 @@ class Cart:
             product = Product.objects.get(
                 id=item["product_id"], status=ProductStatus.published.value
             )
-            cart_item, created = CartItem.objects.get_or_create(cart=cart_obj,product=product)
-            cart_item.quantity = item['quantity']
+            cart_item, created = CartItem.objects.get_or_create(
+                cart=cart_obj, product=product
+            )
+            cart_item.quantity = item["quantity"]
             cart_item.save()
-        
-        product_ids = [item['product_id'] for item in self.cart["items"]]
-        CartItem.objects.filter(cart=cart_obj).exclude(product__id__in=product_ids).delete()
-            
-        
+
+        product_ids = [item["product_id"] for item in self.cart["items"]]
+        CartItem.objects.filter(cart=cart_obj).exclude(
+            product__id__in=product_ids
+        ).delete()

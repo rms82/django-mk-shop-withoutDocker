@@ -11,8 +11,10 @@ class AddToCartView(View):
         cart_obj = Cart(request)
 
         product_id = request.POST.get("product_id")
+        quantity  = int(request.POST.get("quantity", 1))
+
         if product_id:
-            cart_obj.add_product(product_id)
+            cart_obj.add_product(product_id, quantity)
 
             if request.user.is_authenticated:
                 cart_obj.cart_to_db(request.user)

@@ -54,6 +54,8 @@ class TicketUpdateForm(forms.ModelForm):
         self.fields["is_resolved"].widget.attrs["class"] = "form-check-input"
         self.fields["message"].widget.attrs["class"] = "form-control"
 
+        self.fields["message"].widget.attrs["readonly"] = True
+
 
 class UserUpdateForm(forms.ModelForm):
 

@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
+from django.db import transaction
 
 
 from django.urls import reverse_lazy
@@ -50,16 +51,17 @@ class OrderSummaryView(LoginRequiredMixin, FormView):
         cleaned_data = form.cleaned_data
 
         cart_object = CartModel.objects.get(user=self.request.user)
-        cart_items = cart_object.cart_items.all()
+        cart_items = cart_object.cart_items.select_related("product")
 
         address_id = cleaned_data.get("address_id")
         coupon = cleaned_data.get("coupon", None)
 
-        order = self.create_order(address_id)
-        order_items = self.create_orderitems(order, cart_items)
+        with transaction.atomic():
+            order = self.create_order(address_id)
+            order_items = self.create_orderitems(order, cart_items)
 
-        self.apply_coupon(order, coupon)
-        self.clear_cart(cart_items)
+            self.apply_coupon(order, coupon)
+            self.clear_cart(cart_items)
 
         self.success_url = reverse_lazy("order:order_complete", kwargs={"pk": order.pk})
 
@@ -74,17 +76,23 @@ class OrderSummaryView(LoginRequiredMixin, FormView):
         return order
 
     def create_orderitems(self, order, cart_items):
-        order_items = [
-            OrderItem(
-                order=order,
-                product=item.product,
-                quantity=item.quantity,
-                price=item.product.get_price(),
-            )
-            for item in cart_items
-        ]
-        OrderItem.objects.bulk_create(order_items)
+        order_items = []
+        for item in cart_items:
+            product = item.product
+            quantity = min(item.quantity, product.stock)
 
+            order_items.append(OrderItem(
+                order=order,
+                product=product,
+                quantity=quantity,
+                price=product.get_price(),
+            ))
+
+            product.stock -= quantity
+            product.save()
+
+        
+        OrderItem.objects.bulk_create(order_items)
         return order_items
 
     def clear_cart(self, cart_items):

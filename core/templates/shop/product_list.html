@@ -199,13 +199,20 @@
             {% for product in products %}
                 <div class="col mb-4">
                 <!-- Card -->
-                <div class="card card-bordered shadow-none text-center h-100">
+                <div class="card card-bordered shadow-none text-center h-100 {% if not product.is_available %}bg-light opacity-50{% endif %}">
                   <div class="card-pinned">
                     <img class="card-img-top" src="{{ product.image.url }}" alt="Image Description">
   
+
                     <div class="card-pinned-top-start">
-                      <span class="badge bg-success rounded-pill">جدید</span>
+                      {% if not product.is_available %}
+                        <span class="badge bg-danger rounded-pill">ناموجود</span>
+                      {% else %}
+                        <span class="badge bg-success rounded-pill">جدید</span>
+                      {% endif %}
                     </div>
+
+
                     {% if request.user.is_authenticated %}
                     <div class="card-pinned-top-end">
                       <button type="button" onClick="productWishlist(this)" class="btn btn-outline-secondary btn-xs btn-icon rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="علاقه مندی" id='productWishlist' product-id="{{ product.id }}">
@@ -255,8 +262,13 @@
                       <span class="small">0</span>
                     </a>
                     <!-- End Rating -->
-  
-                    <button type="button" class="btn btn-outline-primary btn-sm btn-transition rounded-pill" onClick="addToCart({{product.id}})">افزودن به سبد خرید</button>
+                    {% if product.is_available %}
+                      <button type="button" class="btn btn-outline-primary btn-sm btn-transition rounded-pill" onClick="addToCart({{product.id}})">افزودن به سبد خرید</button>
+                    {% else %}
+                    <br />
+                      <button type="button" class="btn btn-secondary btn-sm rounded-pill " disabled>ناموجود</button>
+                    {% endif %}
+
                   </div>
                 </div>
                 <!-- End Card -->

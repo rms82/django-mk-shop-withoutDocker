@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value, BooleanField
 from django.views.generic import ListView, DetailView, View
 from django.core.exceptions import FieldError
 from shop.models import Product, ProductCategory, ProductStatus, Wishlist
@@ -23,8 +23,15 @@ class ProductListView(ListView):
     def get_queryset(self):
         queryset = (
             Product.objects.filter(status=ProductStatus.published.value)
-            .order_by("-id")
             .prefetch_related("category")
+            .annotate(
+                is_available_db=Case(
+                    When(stock__gt=0, then=Value(True)),
+                    default=Value(False),
+                    output_field=BooleanField(),
+                )
+            )
+            .order_by('-is_available_db', '-id')
         )
 
         if category := self.request.GET.get("category"):
@@ -89,8 +96,7 @@ class ProductDetailView(DetailView):
 
         if self.request.user.is_authenticated:
             context["is_wishlist"] = Wishlist.objects.filter(
-                user=self.request.user,
-                product=self.object
+                user=self.request.user, product=self.object
             ).exists()
 
         return context

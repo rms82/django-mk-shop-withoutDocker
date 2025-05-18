@@ -146,11 +146,13 @@
           <!-- End Price -->
 
           <!-- Quantity -->
+          {% if product.is_available %}
           <div class="quantity-counter mb-3">
             <div class="js-quantity-counter row align-items-center">
               <div class="col">
                 <span class="d-block small">تعداد را انتخاب کنید</span>
-                <input class="js-result form-control form-control-quantity-counter" type="text" value="1">
+                  <input class="js-result form-control form-control-quantity-counter" type="number" value="1" max="{{product.stock}}" name='stock' id="product-quantity">
+
               </div>
               <!-- End Col -->
 
@@ -170,7 +172,14 @@
             </div>
             <!-- End Row -->
           </div>
+          {% endif %}
           <!-- End Quantity -->
+
+          {% if product.is_available %}
+          <p class="text-danger fw-bold">تعداد موجودر در انبار: {{product.stock }}</p>
+          {% else %}
+          <p class="text-danger fw-bold">نا موجود</p>
+          {% endif %}
 
           <!-- Accordion -->
           <div class="accordion mb-5" id="shopCartAccordion">
@@ -231,7 +240,11 @@
           <!-- End Accordion -->
 
           <div class="d-grid mb-4">
-            <button type="button" class="btn btn-primary btntransition" onClick='addToCart({{product.id}})'>افزودن به سبد خرید</button>
+            {% if product.is_available %}
+              <button type="button" class="btn btn-primary btntransition" onClick='addToCart({{product.id}},document.getElementById("product-quantity").value)'>افزودن به سبد خرید</button>
+            {% else %}
+              <button type="button" class="btn btn-danger btntransition disabled">در انبار موجود نمیباشد</button>
+            {% endif %}
           </div>
 
           <!-- Media -->
@@ -791,5 +804,29 @@
 
     
   }
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('.js-plus').click(function() {
+      var input = $('.js-result');
+      var val = parseInt(input.val()) || 0;
+      input.val(val + 1);
+    });
+
+    $('.js-minus').click(function() {
+      var input = $('.js-result');
+      var val = parseInt(input.val()) || 0;
+      if (val > 1) {
+        input.val(val - 1);
+      }
+    });
+
+    // جلوگیری از ورود کاراکتر غیرعددی
+    $('.js-result').on('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+  });
+
 </script>
 {% endblock extra_js %}

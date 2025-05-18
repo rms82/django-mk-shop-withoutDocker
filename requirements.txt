@@ -9,3 +9,4 @@ gunicorn
 mysqlclient
 django-ckeditor==6.7.2
 requests
+django-jazzmin
