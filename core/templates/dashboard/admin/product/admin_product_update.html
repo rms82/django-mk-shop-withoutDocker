@@ -124,6 +124,17 @@
                   
                 </div>
               </div>
+              <div class="col-md-6 mb-3">
+                <label for="validationValidSelect1" class='fw-bold text-danger mx-1'>نمایش در اسلاید صفحه اصلی</label>
+                {{form.show_in_slide}}
+                {% if form.show_in_slide.errors %}
+                    {% for error in form.show_in_slide.errors %}
+                        <div class="alert alert-danger text-center mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              </div>
 
               <div class="col-md-12 mb-3">
                 <label for="validationValidFileInput1">تصویر محصول:  </label>

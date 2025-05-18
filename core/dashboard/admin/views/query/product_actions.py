@@ -24,6 +24,11 @@ def action_product_list(request, action, selected_products):
         Product.objects.filter(id__in=selected_products).update(discount=0)
         messages.success(request, "تخفیفات محصولات انتخابی حذف گردید.")
 
+    elif action == "unshow_in_slide" and selected_products:
+        # Remove discount from selected products
+        Product.objects.filter(id__in=selected_products).update(show_in_slide=False)
+        messages.success(request, "محصولات انتخابی از اسلاید اصلی حذف شدند")
+
     elif action == "delete_selected" and selected_products:
         # Delete selected products
         try:

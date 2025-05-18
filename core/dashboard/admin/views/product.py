@@ -24,6 +24,7 @@ from dashboard.admin.views.query.product_query import (
     query_product_category,
     query_product_status,
     query_product_order_by,
+    query_product_show_in_slide,
 )
 from dashboard.admin.views.query.product_actions import action_product_list
 
@@ -44,6 +45,7 @@ class AdminProductDashbordView(
         queryset = query_product_category(self.request, queryset)
         queryset = query_product_order_by(self.request, queryset)
         queryset = query_product_status(self.request, queryset)
+        queryset = query_product_show_in_slide(self.request, queryset)
 
         return queryset
 

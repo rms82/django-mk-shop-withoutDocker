@@ -43,3 +43,13 @@ def query_product_status(request, queryset):
             queryset = queryset.filter(status=ProductStatus.draft.value)
     
     return queryset
+
+
+def query_product_show_in_slide(request, queryset):
+    if show_slided := request.GET.get("showInSlide"):
+        if show_slided == "1":
+            queryset = queryset.filter(show_in_slide=True)
+        elif show_slided == "0":
+            queryset = queryset.filter(show_in_slide=False)
+    
+    return queryset

@@ -70,6 +70,17 @@
               </select>
             </div>
             <!-- End New Filter -->
+
+            <!-- New Filter for Published Status -->
+            <div class="col-md-6 py-1">
+              <select class="form-select" name="showInSlide" id="showInSlideSelect">
+                <option value="" selected>نمایش در اسلاید صفحه اصلی</option>
+                <option value="1">بله</option>
+                <option value="0">خیر</option>
+              </select>
+            </div>
+            <!-- End New Filter -->
+
             <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center p-3 mx-auto">
               <button type="submit" class="btn btn-primary mx-2">
                 <i class="bi bi-search"></i>
@@ -84,14 +95,32 @@
         </div>
 
         <div class="row">
+          <form method="post">
+          {% csrf_token %}
+          {% comment %} actions  {% endcomment %}
+          <div class="d-flex mt-4">
+            <div>
+              <select name="action" class="form-select" required>
+                <option value="" selected disabled>عملیات دسته جمعی</option>
+                <option value="unpublish_selected">عدم انتشار</option>
+                <option value="publish_selected">انتشار</option>
+                <option value="delete_selected">حذف کردن</option>
+                <option value="without_discount">برداشتن تخفیف</option>
+                <option value="unshow_in_slide">حذف کردن از اسلاید</option>
+                <!-- You can add more actions here -->
+              </select>
+            </div>
+            <button type="submit" class="btn btn-warning mx-2">اجرا</button>
+          </div>
+            {% comment %} end actions  {% endcomment %}
+              </div>
           <!-- Table -->
           <div class="container-fluid">
             <!-- Wrap the table with table-responsive -->
             <span>
               تعداد محصولات:  {{ page_obj.paginator.count }}
             </span>
-            <form method="post">
-              {% csrf_token %}
+            
               {% comment %} products {% endcomment %}
               <div class="table-responsive">
                   <table class="table table-bordered table-striped table-hover">
@@ -149,20 +178,7 @@
                   </table>
               </div>
 
-              {% comment %} actions  {% endcomment %}
-              <div class="d-flex justify-content-between mt-4">
-                <div>
-                    <select name="action" class="form-select" required>
-                        <option value="" selected disabled>عملیات دسته جمعی</option>
-                        <option value="unpublish_selected">عدم انتشار</option>
-                        <option value="publish_selected">انتشار</option>
-                        <option value="delete_selected">حذف کردن</option>
-                        <option value="without_discount">برداشتن تخفیف</option>
-                        <!-- You can add more actions here -->
-                    </select>
-                    <button type="submit" class="btn btn-warning mx-2 mt-1">اجرا</button>
-                </div>
-              </div>
+              
             </form>
           </div>
     
@@ -211,6 +227,7 @@
     $('#categorySelect').val(searchParams.get("category") || "")
     $('#select-order-by').val(searchParams.get("order-by") || "")
     $('#ispublishedSelect').val(searchParams.get("ispublished") || "")
+    $('#showInSlideSelect').val(searchParams.get("showInSlide") || "")
 
 
     $('#select-all').change(function() {

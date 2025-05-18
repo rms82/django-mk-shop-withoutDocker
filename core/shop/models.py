@@ -52,6 +52,7 @@ class Product(TitleSlugDateModel):
     discount = models.PositiveIntegerField(
         validators=[MaxValueValidator(100)], default=0
     )
+    show_in_slide = models.BooleanField(default=False, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:

@@ -39,6 +39,7 @@ class ProductForm(forms.ModelForm):
             "status",
             "price",
             "discount",
+            "show_in_slide",
         ]
 
 
