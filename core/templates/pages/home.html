@@ -103,8 +103,7 @@
 
             <div class="card-footer text-center">
               <h3 class="card-title">تی شرت</h3>
-              <p class="card-text text-muted small">شروع از 29.99 تومان</p>
-              <a class="btn btn-outline-primary btn-sm btn-transition rounded-pill px-6" href="#">مشاهده همه</a>
+              <a class="btn btn-outline-primary btn-sm btn-transition rounded-pill px-6" href="{% url "shop:product_list" %}">مشاهده همه</a>
             </div>
           </div>
           <!-- End Card -->
@@ -128,8 +127,8 @@
 
             <div class="card-footer text-center">
               <h3 class="card-title">پوشش های فنی</h3>
-              <p class="card-text text-muted small">شروع از 399.99 تومان</p>
-              <a class="btn btn-outline-primary btn-sm btn-transition rounded-pill px-6" href="#">مشاهده همه</a>
+
+              <a class="btn btn-outline-primary btn-sm btn-transition rounded-pill px-6" href="{% url "shop:product_list" %}">مشاهده همه</a>
             </div>
           </div>
           <!-- End Card -->
@@ -153,8 +152,8 @@
 
             <div class="card-footer text-center">
               <h3 class="card-title">کلاه</h3>
-              <p class="card-text text-muted small">شروع از 13.99 تومان</p>
-              <a class="btn btn-outline-primary btn-sm btn-transition rounded-pill px-6" href="#">مشاهده همه</a>
+
+              <a class="btn btn-outline-primary btn-sm btn-transition rounded-pill px-6" href="{% url "shop:product_list" %}">مشاهده همه</a>
             </div>
           </div>
           <!-- End Card -->
@@ -169,128 +168,12 @@
     </div>
     <!-- End Card Grid -->
 
-    <!-- Card Grid -->
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6 mb-4 mb-md-0">
-          <!-- Card -->
-          <div class="card card-lg bg-img-start"
-            style="background-image: url({% static 'img/900x900/img3.jpg' %}); min-height: 30rem;">
-            <div class="card-body">
-              <span class="card-subtitle text-danger">فقط برای زمانی محدود</span>
-              <h2 class="card-title display-4">70% تخفیف</h2>
-
-              <div class="w-md-65">
-                <!-- Countdown -->
-                <div class="js-countdown row mb-5">
-                  <div class="col-4 text-center">
-                    <div class="border border-dark rounded-2 p-2 mb-1">
-                      <span class="js-cd-days h2"></span>
-                    </div>
-
-                    <h5 class="card-title">روزها</h5>
-                  </div>
-                  <!-- End Col -->
-
-                  <div class="col-4 text-center">
-                    <div class="border border-dark rounded-2 p-2 mb-1">
-                      <span class="js-cd-hours h2"></span>
-                    </div>
-
-                    <h5 class="card-title">ساعت ها</h5>
-                  </div>
-                  <!-- End Col -->
-
-                  <div class="col-4 text-center">
-                    <div class="border border-dark rounded-2 p-2 mb-1">
-                      <span class="js-cd-minutes h2"></span>
-                    </div>
-
-                    <h5 class="card-title">دقیقه</h5>
-                  </div>
-                  <!-- End Col -->
-
-                  <div class="col-4 d-none text-center">
-                    <div class="border border-dark rounded-2 p-2 mb-1">
-                      <span class="js-cd-seconds h2"></span>
-                    </div>
-
-                    <h5 class="card-title">ثانیه</h5>
-                  </div>
-                  <!-- End Col -->
-                </div>
-                <!-- End Row -->
-              </div>
-
-              <a class="btn btn-light btn-sm btn-transition rounded-pill px-6" href="#">خرید کنید</a>
-            </div>
-          </div>
-          <!-- End Card -->
-        </div>
-
-        <div class="col-md-6">
-          <!-- Card -->
-          <div class="card card-lg bg-img-start"
-            style="background-image: url({% static 'img/900x900/img4.jpg' %}); min-height: 30rem;">
-            <div class="card-body">
-              <div class="mb-4">
-                <h2 class="card-title text-white">$109.99</h2>
-                <h3 class="card-title text-white">دوچرخه Nakto 26</h3>
-                <p class="card-text text-white">دوچرخه های NAKTO برای نجات محیط زیست و به ارمغان آوردن سرگرمی برای
-                  دوستانمان!</p>
-              </div>
-
-              <a class="btn btn-light btn-sm btn-transition rounded-pill px-6" href="#">خرید کنید</a>
-            </div>
-          </div>
-          <!-- End Card -->
-        </div>
-      </div>
-    </div>
-    <!-- End Card Grid -->
 
     <!-- Card Grid -->
     {% comment %} latest products {% endcomment %}
     {%  show_latest_products %}
 
     
-
-    <!-- Clients -->
-    <div class="container content-space-2">
-      <div class="row">
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static 'svg/brands/hollister-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static 'svg/brands/levis-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static 'svg/brands/new-balance-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static 'svg/brands/puma-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static 'svg/brands/nike-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static 'svg/brands/tnf-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-      </div>
-      <!-- End Row -->
-    </div>
-    <!-- End Clients -->
   </main>
   <!-- ========== END MAIN CONTENT ========== -->
 {% endblock body %}

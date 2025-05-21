@@ -50,9 +50,15 @@
     <ul class='list-unstyled' id='massages_list'>
         {% for message in messages %}
             <li class='w-75 mx-auto my-2'>
-                <h4 class="alert-{{message.tags}} text-center" style="padding-top: 5px; padding-bottom: 5px; border-radius: 10px;">
+                {% if message.tags == 'success' %}
+                  <h4 class="alert-success text-center" style="padding:5px; border-radius:10px;">
                     {{ message }}
-                </h4>
+                  </h4>
+                {% elif message.tags == 'error' %}
+                  <h4 class="alert-danger text-center" style="padding:5px; border-radius:10px;">
+                    {{ message }}
+                  </h4>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

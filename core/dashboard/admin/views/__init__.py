@@ -3,3 +3,5 @@ from .ticket import *
 from .product import *
 from .main import *
 from .coupon import *
+from .reviews import *
+

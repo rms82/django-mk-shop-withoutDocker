@@ -1,0 +1,159 @@
+{% extends "dashboard/admin/base.html" %}
+{% load static %}
+
+
+{% block admin_dashboard_body %}
+<div class="col-lg-9">
+
+  <div class="card">
+    <!-- Header -->
+    <div class="card-header border-bottom">
+      
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="card-header-title"> نظرات کاربران برای محصولات</h5>
+        <span class="text-danger fw-bold"> تعداد کل نظرات: {{ paginator.count }}</span>
+
+        
+
+      </div>
+    </div>
+  
+    <!-- Body -->
+    <div class="card-body">
+      <div class="row">
+        {% for review in reviews %}
+          <div class="col-12 mb-5">
+            <div class="card shadow-sm border-0">
+              <div class="card-body">
+                <h5 class="card-title text-info mb-3">نظر شماره {{ forloop.counter }}</h5>
+                
+                <p class="mb-2">
+                  <strong class="text-secondary">برای محصول:</strong>
+                  {{ review.product.title }}
+                </p>
+
+                <p class="mb-2">
+                  <strong class="text-secondary">نویسنده:</strong>
+                  {{ review.user.email }}
+                </p>
+                
+                <p class="mb-3">
+                  <strong class="text-secondary">متن نظر:</strong>
+                  {{ review.comment }}
+                </p>
+
+                <span class="badge bg-review-{{ review.status }} mb-2">
+                  {{ review.get_status_display }}
+                </span>
+                <br />
+
+                <strong class="text-secondary">امتیاز کاربر:</strong>
+                <span class="text-warning">
+                  {% for i in "12345" %}
+                    {% if i|add:0 <= review.rating %}
+                      <i class="bi bi-star-fill"></i>
+                    {% else %}
+                      <i class="bi bi-star"></i>
+                    {% endif %}
+                  {% endfor %}
+                </span>
+
+                {% if review.is_pending %}
+                <div class="mt-4 d-flex flex-wrap gap-2">
+                    <!--  تأیید نظر -->
+                    <a href="{% url "dashboard:admin:review_accept" review.pk  %}" class="btn btn-outline-success btn-sm">
+                      <i class="bi bi-check-circle me-1"></i> تایید نظر
+                    </a>
+                   
+                    <!-- فرم رد نظر -->
+                    <a href="{% url "dashboard:admin:review_reject" review.pk %}" class="btn btn-outline-danger btn-sm">
+                      <i class="bi bi-x-circle me-1"></i> رد کردن نظر
+                    </a>
+
+                  </div>
+                  <hr/>
+                {% endif %}
+
+                <div class="mt-4 d-flex flex-wrap gap-2">
+                  {% if review.product.is_published %}
+                    <a href="{% url 'shop:product_detail' review.product.slug %}" class="btn btn-outline-info btn-sm">
+                      <i class="bi bi-eye-fill me-1"></i> مشاهده محصول و نظر
+                    </a>
+                  {% endif %}
+
+                  
+
+                  <!-- فرم حذف نظر -->
+                  <form method="post" action="{% url 'dashboard:admin:review_delete' review.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('آیا از حذف نظر مطمئن هستید؟')">
+                      <i class="bi bi-trash me-1"></i> حذف
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="text-center bg-dark text-white p-4 rounded">
+            نظری برای نمایش وجود ندارد.
+          </div>
+        {% endfor %}
+
+
+
+  
+        
+      </div>
+      {% include "includes/pagination.html" %}
+    </div>
+  </div>
+  
+</div>
+<!-- End Col -->
+{% endblock admin_dashboard_body %}
+
+
+
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">حساب</li>
+<li class="breadcrumb-item">داشبورد دمین</li>
+<li class="breadcrumb-item" aria-current="page">
+    نظرات کاربران
+</li>
+{% endblock breadcrumb %}
+
+
+
+{% block extra_js %}
+<script>
+  $("#adminReviews").addClass('active');
+
+
+  $(".bg-review-0").addClass('btn btn-sm btn-warning');
+  $(".bg-review-1").addClass('btn btn-sm btn-success');
+  $(".bg-review-2").addClass('btn btn-sm btn-danger');
+
+
+  $(document).ready(function() {
+    setTimeout(function() {
+        $('.alert.alert-danger').fadeOut();
+    }, 3000);
+
+  });
+
+
+
+  function getPage(page_number){
+    let searchParams = new URLSearchParams(window.location.search)
+    searchParams.set('page', page_number)
+
+    window.location.href =  window.location.pathname + "?" + searchParams.toString()
+
+  }
+
+</script>
+
+{% endblock extra_js %}
+

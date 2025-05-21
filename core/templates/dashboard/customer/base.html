@@ -106,6 +106,20 @@
                         <i class="bi-basket nav-icon"></i> سفارشات شما
                       </a>
                     </li>
+
+                    <li class="nav-item">
+                      <a class="nav-link " href="{% url 'dashboard:customer:address_list' %}" id="customerAddress">
+                        <i class="bi-geo-alt nav-icon"></i> نشانی
+                      </a>
+                    </li>
+
+                  </ul>
+                  <!-- End List -->
+
+                  <span class="text-cap">موارد شخصی</span>
+
+                  <!-- List -->
+                  <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
                     <li class="nav-item">
                       <a class="nav-link " href="{% url "dashboard:customer:wishlist" %}" id='customerWishlist'>
                         <i class="bi-heart nav-icon"></i>لیست علایق
@@ -113,8 +127,8 @@
                     </li>
 
                     <li class="nav-item">
-                      <a class="nav-link " href="{% url 'dashboard:customer:address_list' %}" id="customerAddress">
-                        <i class="bi-geo-alt nav-icon"></i> نشانی
+                      <a class="nav-link " href="{% url "dashboard:customer:reviews" %}" id="customerReviews">
+                        <i class="bi-chat-left-text nav-icon"></i> نظرات من
                       </a>
                     </li>
 

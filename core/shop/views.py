@@ -2,9 +2,12 @@ from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Q, Case, When, Value, BooleanField
 from django.views.generic import ListView, DetailView, View
 from django.core.exceptions import FieldError
-from shop.models import Product, ProductCategory, ProductStatus, Wishlist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import JsonResponse
+
+
+from shop.models import Product, ProductCategory, ProductStatus, Wishlist
+from review.models import ReviewStatus
 
 
 # Create your views here.
@@ -31,7 +34,7 @@ class ProductListView(ListView):
                     output_field=BooleanField(),
                 )
             )
-            .order_by('-is_available_db', '-id')
+            .order_by("-is_available_db", "-id")
         )
 
         if category := self.request.GET.get("category"):
@@ -98,6 +101,12 @@ class ProductDetailView(DetailView):
             context["is_wishlist"] = Wishlist.objects.filter(
                 user=self.request.user, product=self.object
             ).exists()
+
+        context["reviews"] = self.object.reviews.filter(
+            status=ReviewStatus.ACCEPTED.value
+        ).select_related("user", "user__profile")
+
+        context["review_count"] = context["reviews"].count()
 
         return context
 

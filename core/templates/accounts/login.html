@@ -19,7 +19,7 @@
           <!-- Form -->
           <div class="mb-4">
             <label class="form-label" for="signupSimpleLoginEmail">ایمیل شما</label>
-            <input type="email" class="form-control form-control-lg text-center" name="username"
+            <input type="email" class="form-control form-control-lg text-center" name="username" value="{{ form.username.value|default:'' }}"
               id="signupSimpleLoginEmail" placeholder="email@site.com" aria-label="email@site.com" required>
           </div>
           <!-- End Form -->

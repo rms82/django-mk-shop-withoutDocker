@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "cart",
     "order",
     "dashboard",
+    "review",
     # third party apps
     "debug_toolbar",
     "ckeditor",
@@ -190,11 +191,8 @@ LOGIN_REDIRECT_URL = "pages:home"
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "پنل مدیریت",
-
     # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_header": "سایت ما",
     "site_brand": "سایت ما",
     # "site_logo": "img/default_profile.jpg",
-
- 
 }

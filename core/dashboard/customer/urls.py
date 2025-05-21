@@ -23,6 +23,8 @@ urlpatterns = [
     # wishlist
     path("wishlist/", views.WishlistOrdersView.as_view(), name="wishlist"),
 
+    # reviews
+    path("reviews/", views.ReviewView.as_view(), name="reviews"),
 
 
 ]

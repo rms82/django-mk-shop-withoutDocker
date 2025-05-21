@@ -35,4 +35,12 @@ urlpatterns = [
     path("coupons/add/", views.AdminAddCouponDashbordView.as_view(), name="add_coupon"),
     path("coupons/<int:pk>/edit/", views.AdminCouponUpdateDashbordView.as_view(), name="coupon_update"),
 
+    # reviews
+    path("reviews/", views.AdminReviewView.as_view(), name="reviews"),
+    path("reviews/<int:pk>/delete/", views.AdminReviewDeleteDashbordView.as_view(), name="review_delete"),
+    
+    path("reviews/<int:pk>/accept/", views.AdminReviewAcceptDashbordView.as_view(), name="review_accept"),
+    path("reviews/<int:pk>/reject/", views.AdminReviewRejectDashbordView.as_view(), name="review_reject"),
+
+
 ]
